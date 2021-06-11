@@ -1,0 +1,26 @@
+.center-login {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100vh; 
+}
+
+.form-show {
+  display: block;
+  position: relative;
+  padding: 30px;
+  max-width: 500px;
+  min-width: 300px;
+  max-height: 700px;
+  min-height: 350px;
+  width: 30%;
+  height: 60%;
+}
+
+.h2-form {
+  position: relative;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1em;
+}

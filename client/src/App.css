@@ -36,3 +36,57 @@
     transform: rotate(360deg);
   }
 }
+
+/* My css*/
+
+.vheight-100 {
+  min-height: 100vh;
+}
+
+.below-nav {
+  padding-top: 5rem;
+}
+
+.list-group-item {
+  background-color: transparent;
+}
+
+.list-group-item.active {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.list-group-item-action:hover {
+  background-color: #007bff;
+}
+
+small { 
+  text-align: right;
+}
+
+.fixed-right-bottom {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
+  border-radius: 50%;
+}
+
+.important {
+  color: red;
+}
+
+.form-control-feedback {
+  position: relative;
+  display: block;   
+  color: red;
+  margin-left: 2px;
+  margin-top: -15px;
+  font-size: 12px;  
+}
+
+.left-menu {
+  left: auto;
+  right: 0;
+}
