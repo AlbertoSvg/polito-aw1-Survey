@@ -1,6 +1,5 @@
 import { Form, Button, Alert, Col } from 'react-bootstrap';
 import { useState } from 'react';
-import "./LoginComponent.css";
 
 function LoginForm(props) {
     const [username, setUsername] = useState('');
