@@ -6,6 +6,7 @@ import GuestPage from "./components/GuestPage.js"
 import './App.css';
 import API from "./services/Api.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import Questionary from "./components/FormCreationPage.js";
 
 
 function App() {
@@ -49,7 +50,7 @@ function App() {
     setLoggedIn(false);
   }
 
-  return <Router>
+  return <Questionary></Questionary>; {/*<Router>
     <MyNavbar user={user} loggedIn={loggedIn} doLogOut={doLogOut}></MyNavbar>
     <Switch>
       <Route exact path="/login">
@@ -69,7 +70,8 @@ function App() {
       </Route>
     </Switch>
 
-  </Router>
+  </Router>*/}
+  
 }
 
 export default App;
