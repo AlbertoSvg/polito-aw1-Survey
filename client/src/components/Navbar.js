@@ -1,9 +1,10 @@
-import { Navbar, Button, Form, FormControl, Container, Dropdown, ButtonGroup, ListGroup } from 'react-bootstrap';
+import { Navbar, Button, Form, FormControl, Container, Dropdown, ButtonGroup, ListGroup, Row, Col } from 'react-bootstrap';
 import logo1 from '../logo1.svg'
 import logo2 from '../logo2.svg'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { LogoutButton, LoginButton } from "./LoginComponent.js";
 import { NavLink } from 'react-router-dom';
+import {JustifyLeft } from 'react-bootstrap-icons'
 
 function MyNavbar(props) {
     return (
@@ -13,13 +14,10 @@ function MyNavbar(props) {
                     <span className="navbar-toggler-icon"></span>
                 </Button>
                 <Navbar.Brand>
-                    <img
-                        src={logo1}
-                        width="30"
-                        height="30"
-                        alt=""
-                    />{' '}
-                    Questionary
+                    <Row>
+                    <Col sm={3}><JustifyLeft width="30px" height="30px"></JustifyLeft></Col>
+                    <Col sm={1}>Questionary</Col>
+                    </Row>
                 </Navbar.Brand>
                 <Form inline className="my-2 my-lg-0 mx-auto d-none d-sm-block">
                     <FormControl type="text" placeholder="Search" className="mr-sm-2" />
