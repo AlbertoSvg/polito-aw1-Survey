@@ -36,5 +36,49 @@ async function getUserInfo() {
   }
 }
 
-const API = {getUserInfo, logIn, logOut};
+function addNewSurvey(survey) {
+  const surveyToSend = {
+    title: survey.title,
+    questions: survey.questions
+  }
+  console.log(surveyToSend);
+
+  return new Promise((resolve, reject) => {
+    fetch('/api/surveys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(surveyToSend),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      }
+      else {
+        response.json().then((err) => {
+          reject(err);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+    }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
+  })
+};
+
+function getSurveys() {
+  return new Promise((resolve, reject) => {
+    fetch('/api/surveys').then((response) => {
+      if (response.ok) {
+        response.json().then((surveys) => {
+          const surveysFinal = [...surveys];
+          resolve(surveysFinal);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+      else {
+        response.json().then((err) => {
+          reject(err);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+    }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
+  });
+};
+
+
+const API = {getUserInfo, logIn, logOut, addNewSurvey, getSurveys};
 export default API;

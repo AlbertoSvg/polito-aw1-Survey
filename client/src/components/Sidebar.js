@@ -7,7 +7,7 @@ function Sidebar(props) {
 
     return (
         <ListGroup as="aside" variant="flush">
-            <NavLink to={'/'} className="list-group-item list-group-item-action" activeClassName="list-group-item active">Surveys</NavLink>
+            <NavLink to={'/'} onClick={()=> props.setSurveysChanged(true)} className="list-group-item list-group-item-action" activeClassName="list-group-item active">Surveys</NavLink>
         </ListGroup>
     );
 }

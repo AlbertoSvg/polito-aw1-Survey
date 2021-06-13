@@ -2,12 +2,14 @@ import { Col, Container, Row, Button, Form, InputGroup } from "react-bootstrap";
 import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg } from "react-bootstrap-icons";
 import MyNavbar from "./Navbar.js";
 import { useState } from "react";
+import { Redirect } from "react-router-dom";
 
 
 function Questionary(props) {
     const [title, setTitle] = useState('');
     const [errorTitle, setErrorTitle] = useState(false);
     const [questions, setQuestions] = useState([]);
+    const [submitted, setSubmitted] = useState(false);
     console.log(questions);
 
     const handleTitle = (event) => {
@@ -57,6 +59,14 @@ function Questionary(props) {
         }
     }
 
+    const handleSubmit = (event) => {
+        event.preventDefault(); //TODO: error management
+        const quest = questions.map((q) => {return {title: q.title, type: q.type, choices: q.choices ? [...q.choices] : []}});
+        const survey = {title: title, questions: quest};
+        props.addSurvey(survey);
+        setSubmitted(true);
+    }
+
     return <Container fluid>
         <MyNavbar></MyNavbar>
         <Row className="justify-content-center below-nav vheight-100">
@@ -97,10 +107,14 @@ function Questionary(props) {
                 </Form>
             </Col>
             <Col sm={3} className="formBackground"></Col>
+            
         </Row>
-        <Button type="button" className="btn btn-lg btn-primary fixed-right-bottom" onClick={() => { }}>
+        <Row className="justify-content-center">
+        <Button type="button" className="btn btn-lg btn-primary" onClick={handleSubmit}>
             Submit
         </Button>
+        </Row>
+        {submitted ? <Redirect to="/admin/surveys"></Redirect> : ''}
     </Container>
 };
 

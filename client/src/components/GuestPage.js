@@ -9,7 +9,7 @@ function GuestPage(props) {
         <Row className="vheight-100">
 
             <Col sm={4} className="below-nav collapse d-sm-block bg-light" id="left-sidebar">
-                <Sidebar></Sidebar>
+                <Sidebar setSurveysChanged={props.setSurveysChanged} ></Sidebar>
             </Col>
 
             <Col sm={8} className="below-nav">

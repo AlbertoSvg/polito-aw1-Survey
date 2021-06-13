@@ -4,13 +4,14 @@ import { useState } from "react";
 import { NavLink } from 'react-router-dom';
 
 
+
 function AdminPage(props) {
     const [message, setMessage] = useState(props.message);
 
     return <Container fluid>
         <Row className="vheight-100">
             <Col sm={4} className="below-nav collapse d-sm-block bg-light" id="left-sidebar">
-                <Sidebar doLogIn={props.doLogIn}></Sidebar>
+                <Sidebar setSurveysChanged={props.setSurveysChanged} doLogIn={props.doLogIn}></Sidebar>
             </Col>
 
             <Col sm={8} className="below-nav">
