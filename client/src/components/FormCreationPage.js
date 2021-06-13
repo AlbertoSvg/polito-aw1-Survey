@@ -31,6 +31,32 @@ function Questionary(props) {
         });
     }
 
+    function arraymove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+        return arr;
+    }
+
+    const moveUp = (qIndex) => {
+        console.log("moveUp");
+        if (qIndex > 0) {
+            const arr = arraymove([...questions], qIndex, qIndex - 1);
+            arr[qIndex].id = qIndex+1;
+            arr[qIndex-1].id = qIndex;
+            setQuestions(arr);
+        }
+    }
+    const moveDown = (qIndex) => {
+        console.log("MoveDown");
+        if (qIndex < questions.length - 1) {
+            const arr = arraymove([...questions], qIndex, qIndex + 1);
+            arr[qIndex].id = qIndex+1;
+            arr[qIndex+1].id = qIndex+2;
+            setQuestions(arr);
+        }
+    }
+
     return <Container fluid>
         <MyNavbar></MyNavbar>
         <Row className="justify-content-center below-nav vheight-100">
@@ -41,11 +67,12 @@ function Questionary(props) {
                         <Col sm={11}>
                             <Form.Control size="lg" type="text" placeholder="Enter Title" value={title} onChange={(ev) => handleTitle(ev)} />
                         </Col>
-                        <Col sm={1}>
-                            <Button type="button" size="md" className="btn-primary addButton mt-1" onClick={() => setQuestions((old) => [...old, { id: old.length + 1, type: 0 }])}><PlusLg></PlusLg></Button>
-                        </Col>
+                        {questions.length === 0 ?
+                            <Col sm={1}>
+                                <Button type="button" size="md" className="btn-primary addButton mt-1" onClick={() => setQuestions((old) => [...old, { id: old.length + 1, type: 0 }])}><PlusLg></PlusLg></Button>
+                            </Col> : ''}
                     </Form.Group>
-                    {questions.map((q) => <>
+                    {questions.map((q, i) => <>
                         <Form.Row className="mt-3">
                             <Col sm={1}>
                                 <Button type="button" size="sm" className="mt-1 btn-danger deleteButton" onClick={() => deleteQuestion(q.id)}><XLg></XLg></Button>
@@ -56,15 +83,15 @@ function Questionary(props) {
                             <Col>
                                 <Row>
                                     <Col sm={1}>
-                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { }}> <ChevronUp /> </Button>
+                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { moveUp(i) }}> <ChevronUp /> </Button>
                                     </Col>
                                     <Col sm={1}>
-                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { }}> <ChevronDown /> </Button>
+                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { moveDown(i) }}> <ChevronDown /> </Button>
                                     </Col>
                                 </Row>
                             </Col>
                         </Form.Row>
-                        <Question key={q.id} setQuestions={setQuestions} question={q}></Question>
+                        <Question key={q.id} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
                     </>
                     )}
                 </Form>
@@ -191,9 +218,10 @@ function Question(props) {
                 {type ? questionChoices.map((c) => <MultipleChoiceRow key={c.id} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice}></MultipleChoiceRow>) : ''}
             </div>
         </Col>
-        <Col sm={1}>
-            <Button type="button" size="md" className="btn-primary addButton mt-1" onClick={() => { }}><PlusLg></PlusLg></Button>
-        </Col>
+        {props.question.id === props.nQuestions ?
+            <Col sm={1}>
+                <Button type="button" size="md" className="btn-primary addButton mt-1" onClick={() => { props.setQuestions((old) => [...old, { id: old.length + 1, type: 0 }]) }}><PlusLg></PlusLg></Button>
+            </Col> : ''}
     </Row>
 };
 

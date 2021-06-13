@@ -50,7 +50,7 @@ function App() {
     setLoggedIn(false);
   }
 
-  return <Questionary></Questionary>; {/*<Router>
+  return <Router>
     <MyNavbar user={user} loggedIn={loggedIn} doLogOut={doLogOut}></MyNavbar>
     <Switch>
       <Route exact path="/login">
@@ -65,12 +65,16 @@ function App() {
         <GuestPage></GuestPage>
       </Route>
 
+      <Route exact path="/admin/add">
+        {isMounting ? '' : <> {loggedIn ? <Questionary></Questionary> : <Redirect to="/surveys" />} </>}
+      </Route>
+
       <Route path="/">
         {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <Redirect to="/surveys" />} </>}
       </Route>
     </Switch>
 
-  </Router>*/}
+  </Router>
   
 }
 
