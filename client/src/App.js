@@ -36,6 +36,7 @@ function App() {
   useEffect(() => {
     const loadSurveys = async () => {
       const surveys = await API.getSurveys();
+      console.log("loadSurveys: ");
       console.log(surveys);
       setSurveys(surveys);
     };

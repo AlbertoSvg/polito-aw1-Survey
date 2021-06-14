@@ -24,8 +24,8 @@ exports.addSurvey = (survey) => {
 
 exports.addQuestion = (question, idS) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO questions(title, type, idS) VALUES(?,?,?)';
-        db.run(sql, [question.title, question.type, idS], function(err){
+        const sql = 'INSERT INTO questions(title, type, min, max, idS) VALUES(?,?,?,?,?)';
+        db.run(sql, [question.title, question.type, question.min, question.max, idS], function(err){
             if (err) {
                 reject(err);
                 return;
@@ -72,7 +72,7 @@ exports.getQuestions = (idS) => {
                 reject(err);
                 return;
             }
-            const questions = rows.map((q) => ({id: q.id, title: q.title, type: q.type}));
+            const questions = rows.map((q) => ({id: q.id, title: q.title, type: q.type, min: q.min, max: q.max}));
             
             resolve(questions);
         });

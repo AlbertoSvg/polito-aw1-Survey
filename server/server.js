@@ -122,7 +122,7 @@ app.get('/api/surveys', async (req, res) => {
 
 // POST /api/surveys
 app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
-
+  console.log(req.body);
   const survey = {
     title: req.body.title
   };

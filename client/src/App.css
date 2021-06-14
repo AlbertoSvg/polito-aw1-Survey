@@ -157,3 +157,7 @@ small {
   border-bottom-right-radius:10px;
   
 }
+
+.pMax {
+  display:inline-block;
+}
