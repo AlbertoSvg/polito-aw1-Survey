@@ -90,6 +90,9 @@ function Questionary(props) {
     }
 
     return <Container fluid>
+        <Row className="justify-content-center below-nav">
+        <h1>Prepare a new Survey</h1>
+        </Row>
         <Row className="justify-content-center vheight-100 below-nav">
             <Col sm={3}></Col>
             <Col sm={6} className="formBorder">
@@ -113,7 +116,7 @@ function Questionary(props) {
                                 <Button type="button" size="sm" className="mt-1 btn-danger outline-light" onClick={() => deleteQuestion(q.id)}><XLg /></Button>
                             </Col>
                             <Col sm={3} className="mb-3">
-                                <h3 className="mb-3">{`Question ${q.id}`}</h3>
+                                <h3 className="mb-3">{`Question #${q.id}`}</h3>
                             </Col>
                             <Col>
                                 <Row>
