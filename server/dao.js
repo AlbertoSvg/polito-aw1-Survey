@@ -11,8 +11,8 @@ const db = new sqlite.Database('database.db', (err) => {
 
 exports.addSurvey = (survey) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO surveys(title) VALUES(?)';
-        db.run(sql, [survey.title], function(err){
+        const sql = 'INSERT INTO surveys(title, admin) VALUES(?,?)';
+        db.run(sql, [survey.title, survey.admin], function(err){
             if (err) {
                 reject(err);
                 return;
@@ -49,10 +49,10 @@ exports.addChoice = (choice, idQ) => {
     });
 };
 
-exports.getSurveys = () => {
+exports.getSurveysAdmin = (adminId) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM surveys';
-        db.all(sql, [], (err,rows) => {
+        const sql = 'SELECT * FROM surveys WHERE admin=?';
+        db.all(sql, [adminId], (err,rows) => {
             if(err) {
                 reject(err);
                 return;

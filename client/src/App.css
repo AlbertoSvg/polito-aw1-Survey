@@ -127,18 +127,12 @@ small {
 }*/
 
 .addButton {
-  margin: 0 1.5rem 1.5rem 0;
   transform: translateY(5px);
-  border-radius: 50%;
-}
-.deleteButton {
-  margin: 0 1.5rem 1.5rem 0;
-  border-radius: 50%;
 }
 
 .formBorder {
   padding: 20px;
-  border:1px solid #cecece;
+  border:3px solid #464040;
   border-top-left-radius:20px;
   border-top-right-radius:20px;
   border-bottom-left-radius:20px;
@@ -150,7 +144,7 @@ small {
   margin-top: 10px;
   padding: 20px;
   box-sizing: content-box;
-  border:1px solid #cecece;
+  border:2px solid #cecece;
   border-top-left-radius:10px;
   border-top-right-radius:10px;
   border-bottom-left-radius:10px;
@@ -160,4 +154,12 @@ small {
 
 .pMax {
   display:inline-block;
+}
+
+.submitButton {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
 }

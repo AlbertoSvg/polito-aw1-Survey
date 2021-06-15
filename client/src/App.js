@@ -41,7 +41,7 @@ function App() {
       setSurveys(surveys);
     };
 
-    if(surveysChanged || loggedIn){
+    if(surveysChanged && loggedIn){
       loadSurveys().then(() => {
         setSurveysChanged(false);
         //setLoading(false);
@@ -91,11 +91,11 @@ function App() {
       </Route>
 
       <Route exact path="/admin/surveys">
-        {isMounting ? '' : <> {loggedIn ? <AdminPage setSurveysChanged={setSurveysChanged} message={message} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
+        {isMounting ? '' : <> {loggedIn ? <AdminPage setSurveysChanged={setSurveysChanged} surveys={surveys} message={message} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
       </Route>
 
       <Route exact path="/surveys">
-        <GuestPage setSurveysChanged={setSurveysChanged} ></GuestPage>
+      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
       </Route>
 
       <Route exact path="/admin/add">

@@ -103,7 +103,26 @@ app.get('/api/sessions/current', (req, res) => {
 
 app.get('/api/surveys', async (req, res) => {
   try {
-    const surveys = await dao.getSurveys();
+    const surveys = await dao.getSurveysAdmin(req.user.id);
+    for (const [i, s] of surveys.entries()) {
+      let questions = await dao.getQuestions(s.id);
+      for (const [i, q] of questions.entries()) {
+        const choices = await dao.getChoices(q.id);
+        questions[i] = { ...q, choices: [...choices] };
+      }
+      surveys[i] = { ...s, questions: [...questions] };
+    }
+    res.json(surveys);
+
+  } catch (err) {
+    console.err(err.message);
+    res.status(503).json({ error: 'Database error during the retrievement of the surveys.' });
+  }
+})
+
+app.get('/api/admin/surveys', isLoggedIn, async (req, res) => {
+  try {
+    const surveys = await dao.getSurveysAdmin(req.user.id);
     for (const [i, s] of surveys.entries()) {
       let questions = await dao.getQuestions(s.id);
       for (const [i, q] of questions.entries()) {
@@ -124,7 +143,8 @@ app.get('/api/surveys', async (req, res) => {
 app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
   console.log(req.body);
   const survey = {
-    title: req.body.title
+    title: req.body.title,
+    admin: req.user.id
   };
   try {
     const idS = await dao.addSurvey(survey);

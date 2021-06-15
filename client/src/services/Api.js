@@ -63,7 +63,7 @@ function addNewSurvey(survey) {
 
 function getSurveys() {
   return new Promise((resolve, reject) => {
-    fetch('/api/surveys').then((response) => {
+    fetch('/api/admin/surveys').then((response) => {
       if (response.ok) {
         response.json().then((surveys) => {
           const surveysFinal = [...surveys];

@@ -1,5 +1,4 @@
 import { Navbar, Button, Form, FormControl, Container, Dropdown, ButtonGroup, ListGroup, Row, Col } from 'react-bootstrap';
-import logo1 from '../logo1.svg'
 import logo2 from '../logo2.svg'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { LogoutButton, LoginButton } from "./LoginComponent.js";

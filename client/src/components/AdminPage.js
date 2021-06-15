@@ -1,4 +1,4 @@
-import { Col, Container, Row, Button, Alert } from "react-bootstrap";
+import { Col, Container, Row, Button, Alert, Table } from "react-bootstrap";
 import Sidebar from "./Sidebar.js";
 import { useState } from "react";
 import { NavLink } from 'react-router-dom';
@@ -16,8 +16,24 @@ function AdminPage(props) {
 
             <Col sm={8} className="below-nav">
                 {message && <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert>}
+                <Table responsive="sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Responses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {props.surveys.map((s) => <tr>
+                            <td>{s.id}</td>
+                            <td>{s.title}</td>
+                            <td>0</td>
+                        </tr>)}
+                    </tbody>
+                </Table>
                 <NavLink to="/admin/add">
-                    <Button type="button" className="btn btn-lg btn-primary fixed-right-bottom" onClick={() => { }}>
+                    <Button type="button" className="btn btn-lg btn-primary fixed-right-bottom">
                         &#43;
                     </Button>
                 </NavLink>
