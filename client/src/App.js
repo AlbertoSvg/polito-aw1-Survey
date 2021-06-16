@@ -12,9 +12,11 @@ import Questionary from "./components/FormCreationPage.js";
 function App() {
   const [message, setMessage] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [isMounting, setIsMounting] = useState(true);
-  const [surveysChanged, setSurveysChanged] = useState(true);
+  const [surveysChanged, setSurveysChanged] = useState(true); //indica se è dirty
+  const [surveysAdmin, setSurveysAdmin] = useState([]);
   const [surveys, setSurveys] = useState([]);
 
   useEffect(() => {
@@ -23,6 +25,7 @@ function App() {
         const user = await API.getUserInfo();
         setUser(user);
         setLoggedIn(true);
+        setLoading(true);
         setIsMounting(false);
       }
       catch (err) {
@@ -35,28 +38,51 @@ function App() {
 
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveys = await API.getSurveys();
-      console.log("loadSurveys: ");
-      console.log(surveys);
-      setSurveys(surveys);
+      const surveys = await API.getAdminSurveys();
+      setSurveysAdmin(surveys);
     };
 
-    if(surveysChanged && loggedIn){
+    if(loggedIn && surveysChanged){
+      console.log("ADMIN");
+      setLoading(true);
       loadSurveys().then(() => {
         setSurveysChanged(false);
-        //setLoading(false);
+        setLoading(false);
       }).catch(err => {
         setMessage({ msg: "Impossible to load surveys! Please, try again later...", type: 'danger' });
+        setLoading(false);
         console.error(err);
       });
     }
   }, [surveysChanged, loggedIn]);
+
+  useEffect(() => {
+    const loadSurveys = async () => {
+      const surveys = await API.getSurveys();
+      setSurveys(surveys);
+    };
+
+    //quando lo user ha finito di compilare il questionario
+    if(!loggedIn && surveysChanged){
+      console.log("USER");
+      setLoading(true);
+      loadSurveys().then(() => {
+        setSurveysChanged(false);
+        setLoading(false);
+      }).catch(err => {
+        setMessage({ msg: "Impossible to load surveys! Please, try again later...", type: 'danger' });
+        setLoading(false);
+        console.error(err);
+      });
+    }
+  }, [surveysChanged]);
 
   const doLogIn = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
       setMessage({ msg: `Welcome, ${user.name}!`, type: 'success' });
       setLoggedIn(true);
+      setSurveysChanged(true);
       setUser(user);
       return null
     } catch (err) {
@@ -68,10 +94,12 @@ function App() {
   const doLogOut = async () => {
     await API.logOut();
     setLoggedIn(false);
+    setLoading(true);
+    setSurveysChanged(true);
   }
 
   const addSurvey = (survey) => {
-    setSurveys(oldSurveys => [...oldSurveys, survey]); //da usare poi
+    setSurveysAdmin(oldSurveys => [...oldSurveys, survey]); //da usare poi
     
     API.addNewSurvey(survey)
       .then(() => setSurveysChanged(true))
@@ -91,11 +119,11 @@ function App() {
       </Route>
 
       <Route exact path="/admin/surveys">
-        {isMounting ? '' : <> {loggedIn ? <AdminPage setSurveysChanged={setSurveysChanged} surveys={surveys} message={message} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
+        {isMounting ? '' : <> {loggedIn ? <AdminPage loading={loading} setSurveysChanged={setSurveysChanged} surveys={surveysAdmin} message={message} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
       </Route>
 
       <Route exact path="/surveys">
-      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
+      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage loading={loading} surveys={surveys} setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
       </Route>
 
       <Route exact path="/admin/add">

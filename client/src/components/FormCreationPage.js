@@ -1,6 +1,5 @@
 import { Col, Container, Row, Button, Form, InputGroup, Alert } from "react-bootstrap";
 import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle } from "react-bootstrap-icons";
-import MyNavbar from "./Navbar.js";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 
@@ -62,11 +61,7 @@ function Questionary(props) {
         const titleError = title ? false : true;
         const qErrors = questions.map((q) => {
             const qTitle = q.title ? false : true
-            const cId = q.choices ? q.choices.map((c) => {
-                if (c.choiceTitle === '')
-                    return c.id;
-
-            }) : [];
+            const cId = q.choices ? q.choices.filter((c) => c.choiceTitle==='').map((c) => c.id) : [];
             return { qTitle: qTitle, cId: cId };
         });
         const err = { ...qErrors, titleError: titleError };

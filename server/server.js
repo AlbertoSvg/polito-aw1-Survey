@@ -103,7 +103,7 @@ app.get('/api/sessions/current', (req, res) => {
 
 app.get('/api/surveys', async (req, res) => {
   try {
-    const surveys = await dao.getSurveysAdmin(req.user.id);
+    const surveys = await dao.getSurveys();
     for (const [i, s] of surveys.entries()) {
       let questions = await dao.getQuestions(s.id);
       for (const [i, q] of questions.entries()) {
@@ -112,7 +112,7 @@ app.get('/api/surveys', async (req, res) => {
       }
       surveys[i] = { ...s, questions: [...questions] };
     }
-    res.json(surveys);
+    setTimeout(() => res.json(surveys),1000);
 
   } catch (err) {
     console.err(err.message);

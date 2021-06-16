@@ -61,7 +61,7 @@ function addNewSurvey(survey) {
   })
 };
 
-function getSurveys() {
+function getAdminSurveys() {
   return new Promise((resolve, reject) => {
     fetch('/api/admin/surveys').then((response) => {
       if (response.ok) {
@@ -80,5 +80,24 @@ function getSurveys() {
 };
 
 
-const API = {getUserInfo, logIn, logOut, addNewSurvey, getSurveys};
+function getSurveys() {
+  return new Promise((resolve, reject) => {
+    fetch('/api/surveys').then((response) => {
+      if (response.ok) {
+        response.json().then((surveys) => {
+          const surveysFinal = [...surveys];
+          resolve(surveysFinal);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+      else {
+        response.json().then((err) => {
+          reject(err);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+    }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
+  });
+};
+
+
+const API = {getUserInfo, logIn, logOut, addNewSurvey, getAdminSurveys, getSurveys};
 export default API;
