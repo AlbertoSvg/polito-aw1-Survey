@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import MyNavbar from "./components/Navbar.js";
 import { LoginForm } from "./components/LoginComponent.js";
-import AdminPage from "./components/AdminPage.js"
-import GuestPage from "./components/GuestPage.js"
+import AdminPage from "./components/AdminPage.js";
+import GuestPage from "./components/GuestPage.js";
+import CompileSurvey from "./components/CompileSurvey.js";
 import './App.css';
 import API from "./services/Api.js";
-import { BrowserRouter as Router, Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import Questionary from "./components/FormCreationPage.js";
 
 
@@ -124,6 +125,10 @@ function App() {
 
       <Route exact path="/surveys">
       {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage loading={loading} surveys={surveys} setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
+      </Route>
+
+      <Route exact path="/surveys/compile">
+      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <CompileSurvey></CompileSurvey>}</>}
       </Route>
 
       <Route exact path="/admin/add">

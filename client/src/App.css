@@ -163,3 +163,7 @@ small {
   z-index: 1030;
   margin: 0 1.5rem 1.5rem 0;
 }
+
+.questionTitle {
+  background-color:#c4e1ff;
+}

@@ -59,12 +59,14 @@ function Questionary(props) {
 
     const checkValidation = () => {
         const titleError = title ? false : true;
-        const qErrors = questions.map((q) => {
+        const noQuest = questions.length===0 ? true : false  
+        const qErrors = questions.length!==0 ? questions.map((q) => {
             const qTitle = q.title ? false : true
+            console.log(qTitle);
             const cId = q.choices ? q.choices.filter((c) => c.choiceTitle==='').map((c) => c.id) : [];
             return { qTitle: qTitle, cId: cId };
-        });
-        const err = { ...qErrors, titleError: titleError };
+        }): [];
+        const err = { qErr:[...qErrors], titleError: titleError, noQuestion: noQuest};
         console.log(err);
         setErrors(err);
         return err;
@@ -73,7 +75,15 @@ function Questionary(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         const err = checkValidation();
-        if (err.titleError || err.qTitle || err.cId.length !== 0) {
+        console.log(err);
+        if(err.titleError) {
+            setMessage('Please insert a title');
+        } else if(err.noQuestion){
+            setMessage('Please add at least a question');
+        } else if (err.titleError || err.qErr.filter(e => e.qTitle===true).length!==0 || err.qErr.filter(e => e.cId ? e.cId.length!==0 : false).length!==0) {
+            console.log(err.qErr.filter(e => e.qTitle===true).length!==0 );
+
+            console.log(err.qErr.filter(e => e.cId.length!== 0));
             setMessage('Check errors before submit');
         } else {
             const quest = questions.map((q) => { return { title: q.title, type: q.type, min: q.min, max: q.max, choices: q.choices ? [...q.choices] : [] } });
@@ -124,7 +134,7 @@ function Questionary(props) {
                                 </Row>
                             </Col>
                         </Form.Row>
-                        <Question key={`quest${q.id}`} errors={errors[i]} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
+                        <Question key={`quest${q.id}`} errors={errors.qErr[i]} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
                     </>
                     )}
                 </Form>
@@ -165,7 +175,7 @@ function Question(props) {
             setQuestionTitle('');
             props.setQuestions((oldQuestions) => {
                 return oldQuestions.map((q) => {
-                    if (q.id === props.key)
+                    if (q.id === props.question.id)
                         return {
                             ...q, title: ''
                         };

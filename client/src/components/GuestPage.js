@@ -2,6 +2,7 @@ import { Col, Container, Row, Alert, Table, Button, Spinner } from "react-bootst
 import { FileEarmarkText } from "react-bootstrap-icons";
 import Sidebar from "./Sidebar.js";
 import { useState } from "react";
+import { NavLink } from 'react-router-dom';
 
 function GuestPage(props) {
     const [message, setMessage] = useState('');
@@ -30,7 +31,10 @@ function GuestPage(props) {
                             {props.surveys.map((s) => <tr>
                                 <td>{s.id}</td>
                                 <td className="col col-2">{s.title}</td>
-                                <td className="col col-2 text-right"><Button className="mt-1" size="sm" variant="outline-primary" onClick={() => { }}> <FileEarmarkText /> </Button></td>
+                                <td className="col col-2 text-right"><NavLink to={{
+                                    pathname: "/surveys/compile",
+                                    state: {survey: s}
+                                }}><Button className="mt-1" size="sm" variant="outline-primary" onClick={() => { }}> <FileEarmarkText /> </Button></NavLink></td>
                             </tr>)}
                         </tbody>
                     </Table>
