@@ -28,7 +28,7 @@ function GuestPage(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {props.surveys.map((s) => <tr>
+                            {props.surveys.map((s) => <tr key={`tr-${s.id}`}>
                                 <td>{s.id}</td>
                                 <td className="col col-2">{s.title}</td>
                                 <td className="col col-2 text-right"><NavLink to={{

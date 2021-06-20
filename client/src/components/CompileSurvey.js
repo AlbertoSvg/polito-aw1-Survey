@@ -1,5 +1,4 @@
-import { Col, Container, Row, Button, Form, InputGroup, Alert } from "react-bootstrap";
-import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle } from "react-bootstrap-icons";
+import { Col, Container, Row, Button, Form, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 
@@ -13,12 +12,6 @@ function CompileSurvey(props) {
 
     console.log("answers");
     console.log(answers);
-
-
-
-    const removeAnswer = () => {
-
-    }
 
     return <>
         {survey && Object.keys(survey).length === 0 && survey.constructor === Object ?
@@ -38,9 +31,9 @@ function CompileSurvey(props) {
                                     </div>
                                 </Col>
                             </Row>
-                            {survey.questions.map((q, i) => <>
-                                <Form.Row className="mt-3" />
-                                <Question key={`quest${q.id}`} setAnswers={setAnswers} answers={answers} question={q}></Question>
+                            {survey.questions.map((q,i) => <>
+                                <Form.Row key={`row-${i}`} className="mt-3" />
+                                <Question key={`quest-${i}`} setAnswers={setAnswers} answers={answers} question={q}></Question>
                             </>
                             )}
                         </Form>
@@ -66,13 +59,14 @@ function Question(props) {
                         <h3 className="text-left questionTitle">{props.question.title}</h3>
                     </Col>
                 </Form.Group>
-                {props.question.type === 1 ? props.question.choices.map((c, i) => <MultipleChoiceRow key={`choice${props.question.id}${c.id}`} answers={props.answers} setAnswers={props.setAnswers} questionId={props.question.id} min={props.question.min} max={props.question.max} choice={c}></MultipleChoiceRow>) : <OpenQuestionResponse answers={props.answers} setAnswers={props.setAnswers} questionId={props.question.id}></OpenQuestionResponse>}
+                {props.question.type === 1 ? props.question.choices.map((c, i) => <MultipleChoiceRow key={`choice-${c.id}`} answers={props.answers} setAnswers={props.setAnswers} questionId={props.question.id} min={props.question.min} max={props.question.max} choice={c}></MultipleChoiceRow>) : <OpenQuestionResponse answers={props.answers} setAnswers={props.setAnswers} questionId={props.question.id}></OpenQuestionResponse>}
             </div>
         </Col>
     </Row>
 }
 
 function OpenQuestionResponse(props) {
+
     const handleOpenAnswer = (value) => {
         if (value) {
             if (props.answers.length === 0 || props.answers.filter(a => a.idQ === props.questionId) === 0) {
@@ -114,29 +108,36 @@ function MultipleChoiceRow(props) {
 
     const handleMultipleChoice = (value) => {
         if (value) {
-            if (props.answers.length === 0 || props.answers.filter(a => a.idQ === props.questionId) === 0) {
+            if (props.answers.length === 0 || props.answers.filter(a => a.idQ === props.questionId).length === 0) {
+                console.log("1")
                 const answer = { idQ: props.questionId, data: [choice.id] };
                 props.setAnswers((old) => {
                     return [...old, answer];
                 })
             } else {
+
                 if (props.max === 1) {
-                        props.setAnswers((old) => {
-                            return old.map(oldA => {
-                                if (oldA.idQ === props.questionId) {
-                                    return { ...oldA, data: [choice.id] };
-                                } else {
-                                    return oldA;
-                                }
-                            });
-                        })
+                    console.log("2");
+                    props.setAnswers((old) => {
+                        return old.map(oldA => {
+                            if (oldA.idQ === props.questionId) {
+                                return { ...oldA, data: [choice.id] };
+                            } else {
+                                return oldA;
+                            }
+                        });
+                    })
                 }
                 else {
+                    console.log("3");
                     props.setAnswers((old) => {
                         return old.map(oldA => {
                             const oldData = oldA.data;
                             if (oldA.idQ === props.questionId) {
-                                const newData = oldData.push(choice.id);
+                                const newData = oldData;
+                                if (oldData.length < props.max)
+                                    newData.push(choice.id);
+
                                 return { ...oldA, data: newData };
                             } else {
                                 return oldA;
@@ -147,8 +148,35 @@ function MultipleChoiceRow(props) {
 
             }
         } else {
-
+            console.log("4");
+            props.setAnswers((old) => {
+                const newAnswers = old.map(oldA => {
+                    if (oldA.idQ === props.questionId) {
+                        const index = oldA.data.findIndex((d) => d === choice.id);
+                        console.log("index: " + index);
+                        if (index !== -1) {
+                            const data = oldA.data;
+                            data.splice(index, 1);
+                            return { ...oldA, data: data };
+                        }
+                        return oldA;
+                    } else {
+                        return oldA;
+                    }
+                })
+                return newAnswers.filter(answer => answer.data.length !== 0);
+            })
         }
+    }
+
+    const handleDisabled = () => {
+        const answer = props.answers.find(a => a.idQ === props.questionId);
+        if (props.max !== 1 && answer) {
+            if (!answer.data.includes(choice.id) && answer.data.length === props.max)
+                return true;
+            else return false;
+
+        } else return false;
     }
 
     return (
@@ -159,7 +187,8 @@ function MultipleChoiceRow(props) {
                     type={props.max === 1 ? "radio" : "checkbox"}
                     id={`custom-${choice.id}`}
                     label={choice.choiceTitle}
-                    checked={props.answers.filter(a => a.data.includes(choice.id)).length !==0 ? true : false}
+                    disabled={handleDisabled()}
+                    checked={props.answers.filter(a => a.data.includes(choice.id)).length !== 0 ? true : false}
                     onChange={(ev) => handleMultipleChoice(ev.target.checked)}
                 />
             </Col>

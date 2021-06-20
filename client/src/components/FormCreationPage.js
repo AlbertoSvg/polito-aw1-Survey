@@ -116,7 +116,7 @@ function Questionary(props) {
                             </Col> : ''}
                     </Row>
                     {questions.map((q, i) => <>
-                        <Form.Row key={`formRow${q.id}`} className="mt-3">
+                        <Form.Row key={`formRow-${q.id}`} className="mt-3">
                             <Col sm={1}>
                                 <Button type="button" size="sm" className="mt-1 btn-danger outline-light" onClick={() => deleteQuestion(q.id)}><XLg /></Button>
                             </Col>
@@ -134,7 +134,7 @@ function Questionary(props) {
                                 </Row>
                             </Col>
                         </Form.Row>
-                        <Question key={`quest${q.id}`} errors={errors.qErr[i]} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
+                        <Question key={`quest-${q.id}`} errors={errors ? errors.qErr ? errors.qErr[i] ? errors.qErr[i] : {} : {} : {}} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
                     </>
                     )}
                 </Form>
@@ -316,7 +316,7 @@ function Question(props) {
                         </div>
                     </Col>
                 </Form.Group>
-                {props.question.type === 1 ? props.question.choices.map((c, i) => <MultipleChoiceRow key={`choice${props.question.id}${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>) : <></>}
+                {props.question.type === 1 ? props.question.choices.map((c) => <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>) : <></>}
             </div>
         </Col>
         {props.question.id === props.nQuestions ?
