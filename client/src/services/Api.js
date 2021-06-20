@@ -99,5 +99,25 @@ function getSurveys() {
 };
 
 
-const API = {getUserInfo, logIn, logOut, addNewSurvey, getAdminSurveys, getSurveys};
+function sendSurveyAnswers(answers) {
+
+  return new Promise((resolve, reject) => {
+    fetch('/api/answers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(answers)
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      }
+      else {
+        response.json().then((err) => {
+          reject(err);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+    }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
+  })
+}
+
+const API = {getUserInfo, logIn, logOut, addNewSurvey, getAdminSurveys, getSurveys, sendSurveyAnswers};
 export default API;

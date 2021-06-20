@@ -19,6 +19,7 @@ function App() {
   const [surveysChanged, setSurveysChanged] = useState(true); //indica se è dirty
   const [surveysAdmin, setSurveysAdmin] = useState([]);
   const [surveys, setSurveys] = useState([]);
+  const [sending, setSending] = useState({state: false, idS: -1});
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -63,7 +64,6 @@ function App() {
       setSurveys(surveys);
     };
 
-    //quando lo user ha finito di compilare il questionario
     if(!loggedIn && surveysChanged){
       console.log("USER");
       setLoading(true);
@@ -76,7 +76,7 @@ function App() {
         console.error(err);
       });
     }
-  }, [surveysChanged]);
+  }, [surveysChanged, loggedIn]);
 
   const doLogIn = async (credentials) => {
     try {
@@ -105,11 +105,26 @@ function App() {
     API.addNewSurvey(survey)
       .then(() => setSurveysChanged(true))
       .catch((err) => {
-        setMessage({ msg: err.error + ' Something went wrong. Please try again later.', type: 'danger' });
+        setMessage({ msg: ' Impossible to create a new survey. Please try again later.', type: 'danger' });
         setSurveysChanged(true);
       });
 
   };
+
+  const sendSurveyAnswers = (response) => {
+    setSending({state: true, idS: response.idS});
+
+    API.sendSurveyAnswers(response)
+      .then(()=>{
+        setSending({state: false, idS: response.idS});
+        setSurveysChanged(true)
+      })
+      .catch((err) => {
+        setSending({state: false, idS: response.idS});
+        setMessage({ msg: ' Impossible to send the result. Please try again later.', type: 'danger' });
+        setSurveysChanged(true);
+      })
+  }
 
   return (
   <Router>
@@ -124,11 +139,11 @@ function App() {
       </Route>
 
       <Route exact path="/surveys">
-      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage loading={loading} surveys={surveys} setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
+      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage sending={sending} message={message} setMessage={setMessage} loading={loading} surveys={surveys} setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
       </Route>
 
       <Route exact path="/surveys/compile">
-      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <CompileSurvey></CompileSurvey>}</>}
+      {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <CompileSurvey sendSurveyAnswers={sendSurveyAnswers}></CompileSurvey>}</>}
       </Route>
 
       <Route exact path="/admin/add">

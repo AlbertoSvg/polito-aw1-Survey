@@ -108,3 +108,29 @@ exports.getChoices = (idQ) => {
         });
     });
 };
+
+exports.addAnswer = (answer) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO answers(name, idS) VALUES(?,?)';
+        db.run(sql, [answer.name, answer.idS], function(err){
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(this.lastID);
+        });
+    })
+}
+
+exports.addDataAnswer = (dataAnswer) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO data_answers(data, idQ, idA) VALUES(?,?,?)';
+        db.run(sql, [dataAnswer.data, dataAnswer.idQ, dataAnswer.idA], function(err){
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(this.lastID);
+        });
+    })
+}

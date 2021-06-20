@@ -112,10 +112,9 @@ app.get('/api/surveys', async (req, res) => {
       }
       surveys[i] = { ...s, questions: [...questions] };
     }
-    setTimeout(() => res.json(surveys),1000);
+    res.json(surveys);
 
   } catch (err) {
-    console.err(err.message);
     res.status(503).json({ error: 'Database error during the retrievement of the surveys.' });
   }
 })
@@ -134,14 +133,12 @@ app.get('/api/admin/surveys', isLoggedIn, async (req, res) => {
     res.json(surveys);
 
   } catch (err) {
-    console.err(err.message);
     res.status(503).json({ error: 'Database error during the retrievement of the surveys.' });
   }
 })
 
 // POST /api/surveys
 app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
-  console.log(req.body);
   const survey = {
     title: req.body.title,
     admin: req.user.id
@@ -158,11 +155,30 @@ app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
     }
     res.status(201).json({ id: idS });
   } catch (err) {
-    console.err(err.message);
     res.status(503).json({ error: 'Database error during the creation of the survey.' });
   }
 
 });
+
+// POST /api/answers
+
+app.post('/api/answers', async(req, res) => {
+  const newAnswer = {
+    idS: req.body.idS,
+    name: req.body.name
+  }
+
+  try{
+    const idA = await dao.addAnswer(newAnswer);
+    const dataAnswers = req.body.answers.map( a => {return {idA: idA, idQ: a.idQ, data: a.data}});
+    dataAnswers.forEach(async (dataAns) => {
+      await dao.addDataAnswer(dataAns);
+    });
+    setTimeout(() => res.status(201).json({ id: idA }),2000);
+  } catch(err) {
+    res.status(503).json({ error: 'Database error during the creation of the survey.' });
+  }
+})
 
 
 // activate the server

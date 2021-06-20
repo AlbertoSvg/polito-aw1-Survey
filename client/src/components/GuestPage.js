@@ -1,11 +1,9 @@
 import { Col, Container, Row, Alert, Table, Button, Spinner } from "react-bootstrap";
 import { FileEarmarkText } from "react-bootstrap-icons";
 import Sidebar from "./Sidebar.js";
-import { useState } from "react";
 import { NavLink } from 'react-router-dom';
 
 function GuestPage(props) {
-    const [message, setMessage] = useState('');
 
     return <Container fluid>
         <Row className="vheight-100">
@@ -18,22 +16,23 @@ function GuestPage(props) {
                 {props.loading ? <Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner> : <>
-                    {message && <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert>}
+                    {props.message && <Alert variant={props.message.type} onClose={() => props.setMessage('')} dismissible>{props.message.msg}</Alert>}
                     <Table responsive="sm">
                         <thead>
                             <tr>
                                 <th className="col col-2">#</th>
-                                <th className="col col-2">Title</th>
+                                <th className="col col-3 text-right">Title</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {props.surveys.map((s) => <tr key={`tr-${s.id}`}>
                                 <td>{s.id}</td>
-                                <td className="col col-2">{s.title}</td>
+                                <td className="col col-3 text-right">{s.title}</td>
+                                {props.sending.state && props.sending.idS===s.id ? <td className="col text-right text-primary">Sending... <Spinner size="sm" animation="border" role="status"></Spinner></td> : <td className="col text-right text-primary"></td>}
                                 <td className="col col-2 text-right"><NavLink to={{
                                     pathname: "/surveys/compile",
-                                    state: {survey: s}
+                                    state: { survey: s }
                                 }}><Button className="mt-1" size="sm" variant="outline-primary" onClick={() => { }}> <FileEarmarkText /> </Button></NavLink></td>
                             </tr>)}
                         </tbody>
