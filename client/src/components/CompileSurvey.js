@@ -164,7 +164,6 @@ function MultipleChoiceRow(props) {
     const handleMultipleChoice = (value) => {
         if (value) {
             if (props.answers.length === 0 || props.answers.filter(a => a.idQ === props.questionId).length === 0) {
-                console.log("1")
                 const answer = { idQ: props.questionId, data: [choice.id] };
                 props.setAnswers((old) => {
                     return [...old, answer];
@@ -172,7 +171,6 @@ function MultipleChoiceRow(props) {
             } else {
 
                 if (props.max === 1) {
-                    console.log("2");
                     props.setAnswers((old) => {
                         return old.map(oldA => {
                             if (oldA.idQ === props.questionId) {
@@ -184,7 +182,6 @@ function MultipleChoiceRow(props) {
                     })
                 }
                 else {
-                    console.log("3");
                     props.setAnswers((old) => {
                         return old.map(oldA => {
                             const oldData = oldA.data;
@@ -203,7 +200,6 @@ function MultipleChoiceRow(props) {
 
             }
         } else {
-            console.log("4");
             props.setAnswers((old) => {
                 const newAnswers = old.map(oldA => {
                     if (oldA.idQ === props.questionId) {

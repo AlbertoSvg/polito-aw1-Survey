@@ -10,7 +10,6 @@ function Questionary(props) {
     const [title, setTitle] = useState('');
     const [questions, setQuestions] = useState([]);
     const [submitted, setSubmitted] = useState(false);
-    console.log(questions);
 
     const handleTitle = (event) => {
         const value = event.target.value;
@@ -39,7 +38,6 @@ function Questionary(props) {
     }
 
     const moveUp = (qIndex) => {
-        console.log("moveUp");
         if (qIndex > 0) {
             const arr = arraymove([...questions], qIndex, qIndex - 1);
             arr[qIndex].id = qIndex + 1;
@@ -48,7 +46,6 @@ function Questionary(props) {
         }
     }
     const moveDown = (qIndex) => {
-        console.log("MoveDown");
         if (qIndex < questions.length - 1) {
             const arr = arraymove([...questions], qIndex, qIndex + 1);
             arr[qIndex].id = qIndex + 1;
@@ -62,12 +59,10 @@ function Questionary(props) {
         const noQuest = questions.length===0 ? true : false  
         const qErrors = questions.length!==0 ? questions.map((q) => {
             const qTitle = q.title ? false : true
-            console.log(qTitle);
             const cId = q.choices ? q.choices.filter((c) => c.choiceTitle==='').map((c) => c.id) : [];
             return { qTitle: qTitle, cId: cId };
         }): [];
         const err = { qErr:[...qErrors], titleError: titleError, noQuestion: noQuest};
-        console.log(err);
         setErrors(err);
         return err;
     }
@@ -75,15 +70,11 @@ function Questionary(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         const err = checkValidation();
-        console.log(err);
         if(err.titleError) {
             setMessage('Please insert a title');
         } else if(err.noQuestion){
             setMessage('Please add at least a question');
         } else if (err.titleError || err.qErr.filter(e => e.qTitle===true).length!==0 || err.qErr.filter(e => e.cId ? e.cId.length!==0 : false).length!==0) {
-            console.log(err.qErr.filter(e => e.qTitle===true).length!==0 );
-
-            console.log(err.qErr.filter(e => e.cId.length!== 0));
             setMessage('Check errors before submit');
         } else {
             const quest = questions.map((q) => { return { title: q.title, type: q.type, min: q.min, max: q.max, choices: q.choices ? [...q.choices] : [] } });
@@ -293,8 +284,6 @@ function Question(props) {
         });
     }
 
-
-    console.log(props.question);
     return <Row>
         <Col sm={11}>
             <div className="questionBorder">
@@ -328,7 +317,7 @@ function Question(props) {
 
 function MultipleChoiceRow(props) {
     const choice = props.choice;
-    console.log("CHoice" + choice);
+    
     return (
         <Form.Row className="mt-3">
             <Col sm={6}>
