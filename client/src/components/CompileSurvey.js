@@ -20,42 +20,30 @@ function CompileSurvey(props) {
         }
     }
 
+    const checkValidation = () => {
+        const mandatoryQuestions = survey.questions.filter(q => q.min !== 0);
+        const answersErrors = mandatoryQuestions.map((q) => answers.filter(a => a.idQ === q.id).length ? { idQ: q.id, error: false } : { idQ: q.id, error: true });
+        const openAnswersMaxCharErr = survey.questions.map(q => q.type === 0 ? answers.filter(a => a.idQ === q.id && a.data.length <= 200).length ? { idQ: q.id, error: false } : { idQ: q.id, error: true } : { idQ: q.id, error: false });
+        const nameError = name ? false : true;
+        const errs = { nameError: nameError, answersErrors: answersErrors, openAnswersMaxCharErr: openAnswersMaxCharErr };
+        setErrors(errs);
+        return errs;
+    }
+
     const handleSubmit = (event) => {
 
         event.preventDefault();
-        //const err = checkValidation();
-        //console.log(err);
-        /*if (err.nameErr) {
-            setMessage('Please insert a name');
-        } else if (err.titleError || err.qErr.filter(e => e.qTitle === true).length !== 0 || err.qErr.filter(e => e.cId ? e.cId.length !== 0 : false).length !== 0) {
-            console.log(err.qErr.filter(e => e.qTitle === true).length !== 0);
-
-            console.log(err.qErr.filter(e => e.cId.length !== 0));
-            setMessage('Check errors before submit');
+        const errs = checkValidation();
+        if (errs.nameError || errs.answersErrors.filter(e => e.error === true).length || errs.openAnswersMaxCharErr.filter(e => e.error === true).length) {
+            setMessage('Please, check the errors before submit');
         } else {
-            const quest = questions.map((q) => { return { title: q.title, type: q.type, min: q.min, max: q.max, choices: q.choices ? [...q.choices] : [] } });
-            const survey = { title: title, questions: quest };
-            props.addSurvey(survey);
+            const ans = answers.map(a => { return { idQ: a.idQ, data: a.data.toString() } });
+            const response = { idS: survey.id, name: name, answers: ans };
+            props.sendSurveyAnswers(response);
             setSubmitted(true);
             setErrors({});
-        }*/
-
-         const ans = answers.map(a => {return {idQ: a.idQ, data: a.data.toString()}});
-         const response = {idS: survey.id, name: name, answers: ans};
-         props.sendSurveyAnswers(response);
-         setSubmitted(true);
-         //setErrors({});
-
+        }
     }
-
-    console.log("survey");
-    console.log(survey);
-
-    console.log('name');
-    console.log(name);
-
-    console.log("answers");
-    console.log(answers);
 
     return <>
         {survey && Object.keys(survey).length === 0 && survey.constructor === Object ?
@@ -64,6 +52,7 @@ function CompileSurvey(props) {
                 <Row className="justify-content-center vheight-100 below-nav">
                     <Col sm={3}></Col>
                     <Col sm={6}>
+                        {message && <Alert className="justify-content-center" variant="danger" onClose={() => setMessage('')} dismissible>{message}</Alert>}
                         <Form>
                             <Row>
                                 <Col sm={11}>
@@ -77,7 +66,8 @@ function CompileSurvey(props) {
                             </Row>
                             <Row>
                                 <Col sm={11}>
-                                    <div className="questionBorder">
+                                    {errors ? errors.nameError ? <small className="text-danger">Please insert a name</small> : <></> : <></>}
+                                    <div className={errors ? errors.nameError ? "questionBorderError" : "questionBorder" : "questionBorder"}>
                                         <Form.Group controlId="name">
                                             <h3 className="text-left">Your name: <span className="text-danger">*</span></h3>
                                             <Form.Control required size="lg" type="text" placeholder="Enter your name" value={name} onChange={(ev) => handleName(ev.target.value)} />
@@ -87,7 +77,7 @@ function CompileSurvey(props) {
                             </Row>
                             {survey.questions.map((q, i) => <>
                                 <Form.Row key={`row-${i}`} className="mt-3" />
-                                <Question key={`quest-${i}`} setAnswers={setAnswers} answers={answers} question={q}></Question>
+                                <Question key={`quest-${i}`} errors={errors} setAnswers={setAnswers} answers={answers} question={q}></Question>
                             </>
                             )}
                         </Form>
@@ -105,9 +95,35 @@ function CompileSurvey(props) {
 };
 
 function Question(props) {
+
+    const checkErrorCondition = (type) => {
+        let err = { mandatory: false, maxChars: false };
+        if (props.errors) {
+            if (!type && props.errors.openAnswersMaxCharErr)
+                err = { ...err, maxChars: props.errors.openAnswersMaxCharErr.filter(e => e.idQ === props.question.id && e.error).length };
+            else
+                err = { ...err, maxChars: false };
+
+            if (props.errors.answersErrors)
+                err = { ...err, mandatory: props.errors.answersErrors.filter(e => e.idQ === props.question.id && e.error).length };
+            else
+                err = { ...err, mandatory: false };
+        }
+        else {
+            err = { ...err, mandatory: false };
+        }
+
+        return err;
+    }
+
     return <Row>
         <Col sm={11}>
-            <div className="questionBorder">
+            {checkErrorCondition(props.question.type).mandatory ?
+                <small className="text-danger">This question is mandatory</small> :
+                checkErrorCondition(props.question.type).maxChars ?
+                    <small className="text-danger">Too many characters (max: 200)</small> : <></>}
+
+            <div className={checkErrorCondition().mandatory || checkErrorCondition().maxChars ? "questionBorderError" : "questionBorder"}>
                 <Form.Group as={Row} controlId="formQuestion">
                     <Col sm={12}>
                         <h3 className="text-left questionTitle">{props.question.title}<span className="text-danger">{props.question.min ? ' *' : ''}</span></h3>
