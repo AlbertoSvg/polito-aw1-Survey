@@ -41,7 +41,6 @@ function addNewSurvey(survey) {
     title: survey.title,
     questions: survey.questions
   }
-  console.log(surveyToSend);
 
   return new Promise((resolve, reject) => {
     fetch('/api/surveys', {
@@ -54,7 +53,7 @@ function addNewSurvey(survey) {
       }
       else {
         response.json().then((err) => {
-          reject(err);
+          err ? err.error ? reject(err.error) : '' : '';        
         }).catch(() => { reject({ error: "Cannot parse server response." }) });
       }
     }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
