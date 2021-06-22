@@ -7,21 +7,18 @@ import { NavLink } from 'react-router-dom';
 
 
 function AdminPage(props) {
-    const [message, setMessage] = useState(props.message);
-    const responses = 0 //da passare poi come prop
-    console.log(props.answers);
 
     return <Container fluid>
         <Row className="vheight-100">
             <Col sm={4} className="below-nav collapse d-sm-block bg-light" id="left-sidebar">
-                <Sidebar setSurveysChanged={props.setSurveysChanged} doLogIn={props.doLogIn}></Sidebar>
+                <Sidebar setDirty={props.setDirty} doLogIn={props.doLogIn}></Sidebar>
             </Col>
 
             <Col sm={8} className="below-nav">
                 {props.loading ? <Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner> : <>
-                    {message && <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert>}
+                    {props.message && <Alert variant={props.message.type} onClose={() => props.setMessage('')} dismissible>{props.message.msg}</Alert>}
                     <Table responsive="sm">
                         <thead>
                             <tr>
@@ -33,7 +30,7 @@ function AdminPage(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {props.surveys.map((s) => <SurveyRow key={s.id} survey={s} responses={props.answers.find(a => a.idS === s.id) ? props.answers.find(a => a.idS === s.id).answers.length : 0}></SurveyRow>)}
+                            {props.surveys.map((s) => <SurveyRow key={s.id} survey={s} answers={props.answers.find(a => a.idS === s.id) ? props.answers.find(a => a.idS === s.id) : {idS: s.id, answers: []}} responses={props.answers.find(a => a.idS === s.id) ? props.answers.find(a => a.idS === s.id).answers.length : 0}></SurveyRow>)}
                         </tbody>
                     </Table>
                     <NavLink to="/admin/add">
@@ -53,7 +50,7 @@ function SurveyRow(props) {
     const [popup, setPopup] = useState(false);
     return <tr>
         <SurveyRowData survey={props.survey} responses={props.responses} popup={popup} setPopup={setPopup}></SurveyRowData>
-        <SurveyRowControl responses={props.responses} setPopup={setPopup}></SurveyRowControl>
+        <SurveyRowControl idS={props.survey.id} survey={props.survey} answers={props.answers.answers} responses={props.responses} setPopup={setPopup}></SurveyRowControl>
     </tr>
 }
 
@@ -69,12 +66,16 @@ function SurveyRowData(props) {
 function SurveyRowControl(props) {
 
     return <td className="col col-2 text-right">
-        <NavLink to={{
-            pathname: '/admin/surveys/:idS/answers',
-            state: {/* da fare */}
+        {props.answers.length?
+            <NavLink to={{
+                pathname: `/admin/surveys/${props.idS}/answers`,
+                state: {survey: props.survey, answers: props.answers}
             }}>
+                <Button className="mt-1" size="sm" variant="outline-primary" onClick={() => !props.responses ? props.setPopup(true) : {}}> <Eye /> </Button>
+            </NavLink>
+            :
             <Button className="mt-1" size="sm" variant="outline-primary" onClick={() => !props.responses ? props.setPopup(true) : {}}> <Eye /> </Button>
-        </NavLink>
+        }
     </td>
 
 }

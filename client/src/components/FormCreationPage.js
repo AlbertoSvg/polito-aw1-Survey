@@ -1,7 +1,7 @@
 import { Col, Container, Row, Button, Form, InputGroup, Alert } from "react-bootstrap";
-import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle } from "react-bootstrap-icons";
+import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle, Arrow90degRight, ChevronLeft } from "react-bootstrap-icons";
 import { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, NavLink } from "react-router-dom";
 
 
 function Questionary(props) {
@@ -56,13 +56,13 @@ function Questionary(props) {
 
     const checkValidation = () => {
         const titleError = title ? false : true;
-        const noQuest = questions.length===0 ? true : false  
-        const qErrors = questions.length!==0 ? questions.map((q) => {
+        const noQuest = questions.length === 0 ? true : false
+        const qErrors = questions.length !== 0 ? questions.map((q) => {
             const qTitle = q.title ? false : true
-            const cId = q.choices ? q.choices.filter((c) => c.choiceTitle==='').map((c) => c.id) : [];
+            const cId = q.choices ? q.choices.filter((c) => c.choiceTitle === '').map((c) => c.id) : [];
             return { qTitle: qTitle, cId: cId };
-        }): [];
-        const err = { qErr:[...qErrors], titleError: titleError, noQuestion: noQuest};
+        }) : [];
+        const err = { qErr: [...qErrors], titleError: titleError, noQuestion: noQuest };
         setErrors(err);
         return err;
     }
@@ -70,11 +70,11 @@ function Questionary(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         const err = checkValidation();
-        if(err.titleError) {
+        if (err.titleError) {
             setMessage('Please insert a title');
-        } else if(err.noQuestion){
+        } else if (err.noQuestion) {
             setMessage('Please add at least a question');
-        } else if (err.titleError || err.qErr.filter(e => e.qTitle===true).length!==0 || err.qErr.filter(e => e.cId ? e.cId.length!==0 : false).length!==0) {
+        } else if (err.titleError || err.qErr.filter(e => e.qTitle === true).length !== 0 || err.qErr.filter(e => e.cId ? e.cId.length !== 0 : false).length !== 0) {
             setMessage('Check errors before submit');
         } else {
             const quest = questions.map((q) => { return { title: q.title, type: q.type, min: q.min, max: q.max, choices: q.choices ? [...q.choices] : [] } });
@@ -87,7 +87,7 @@ function Questionary(props) {
 
     return <Container fluid>
         <Row className="justify-content-center below-nav">
-        <h1>Prepare a new Survey</h1>
+            <h1>Create a new Survey</h1>
         </Row>
         <Row className="justify-content-center vheight-100 below-nav">
             <Col sm={3}></Col>
@@ -131,12 +131,10 @@ function Questionary(props) {
                 </Form>
             </Col>
             <Col sm={3} className="formBackground"></Col>
-
         </Row>
 
-        <Button type="button" className="btn btn-lg btn-primary submitButton" onClick={handleSubmit}>
-            Submit
-        </Button>
+        <Button type="button" className="submitButton" size="lg" variant="outline-primary" onClick={handleSubmit}>Submit <Arrow90degRight/></Button>
+        <NavLink to="/admin/surveys"><Button className="leftButton" size="lg" variant="outline-primary" onClick={() => props.setDirty(true)}><ChevronLeft /> Back</Button></NavLink>
         {submitted ? <Redirect to="/admin/surveys"></Redirect> : ''}
     </Container>
 };
@@ -317,7 +315,7 @@ function Question(props) {
 
 function MultipleChoiceRow(props) {
     const choice = props.choice;
-    
+
     return (
         <Form.Row className="mt-3">
             <Col sm={6}>

@@ -164,3 +164,18 @@ exports.getDataAnswers = (idA) => {
         });
     });
 }
+
+exports.getQuestionType = (idQ) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT type FROM questions WHERE id=?';
+        db.get(sql, [idQ], (err, row) => {
+            if(err){
+                reject(err);
+                return;
+            }
+
+            const type = row.type;
+            resolve(type);
+        })
+    })
+}

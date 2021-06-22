@@ -176,3 +176,27 @@ small {
 .questionTitle {
   background-color:#c4e1ff;
 }
+
+.leftButton {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  margin: 0 0 1.5rem 1.5rem;
+}
+
+.rightButton {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
+}
+
+.backButton {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  margin: 0 0 5.5rem 1.5rem;
+}

@@ -1,6 +1,7 @@
 import { Col, Container, Row, Button, Form, Alert } from "react-bootstrap";
 import { useState } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useLocation, NavLink} from "react-router-dom";
+import { ChevronLeft, Arrow90degRight} from "react-bootstrap-icons";
 
 function CompileSurvey(props) {
     const location = useLocation();
@@ -86,9 +87,8 @@ function CompileSurvey(props) {
 
                 </Row>
 
-                <Button type="button" className="btn btn-lg btn-primary submitButton" onClick={handleSubmit}>
-                    Send
-                </Button>
+                <Button type="button" className="submitButton" size="lg" variant="outline-primary" onClick={handleSubmit}>Send <Arrow90degRight/></Button>
+                <NavLink to="/surveys"><Button className="leftButton" size="lg" variant="outline-primary" onClick={() => props.setDirty(true)}><ChevronLeft /> Back</Button></NavLink>
                 {submitted ? <Redirect to="/surveys"></Redirect> : ''}
             </Container>}
     </>
@@ -170,7 +170,7 @@ function OpenQuestionResponse(props) {
         }
     }
 
-    return <Form.Control as="textarea" placeholder="Write your response here" onChange={(ev) => handleOpenAnswer(ev.target.value)}></Form.Control>
+    return <Form.Control as="textarea" placeholder="Max 200 characters..." onChange={(ev) => handleOpenAnswer(ev.target.value)}></Form.Control>
 }
 
 

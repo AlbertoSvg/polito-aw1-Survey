@@ -138,7 +138,16 @@ app.get('/api/admin/surveys', isLoggedIn, async (req, res) => {
 })
 
 // POST /api/surveys
-app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
+app.post('/api/surveys', [
+  isLoggedIn,
+  check('title').isString(),
+  check('questions').isArray()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   const survey = {
     title: req.body.title,
     admin: req.user.id
@@ -162,7 +171,14 @@ app.post('/api/surveys', isLoggedIn, async (req, res) => { //VALIDAZIONE
 
 // POST /api/answers
 
-app.post('/api/answers', async(req, res) => {
+app.post('/api/answers', [
+  check('name').isString(),
+  check('answers').isArray()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   const newAnswer = {
     idS: req.body.idS,
     name: req.body.name
@@ -170,36 +186,45 @@ app.post('/api/answers', async(req, res) => {
 
   try {
     const idA = await dao.addAnswer(newAnswer);
-    const dataAnswers = req.body.answers.map( a => {return {idA: idA, idQ: a.idQ, data: a.data}});
+    const dataAnswers = req.body.answers.map(a => { return { idA: idA, idQ: a.idQ, data: a.data } });
     dataAnswers.forEach(async (dataAns) => {
       await dao.addDataAnswer(dataAns);
     });
-    setTimeout(() => res.status(201).json({ id: idA }),2000);
-  } catch(err) {
+    res.status(201).json({ id: idA });
+  } catch (err) {
     res.status(503).json({ error: 'Database error during the creation of the survey.' });
   }
 });
 
+//GET /api/answers
+
 app.get('/api/answers', isLoggedIn, async (req, res) => {
 
   try {
-    const surveys = await dao.getSurveysAdmin(req.user.id); 
+    const surveys = await dao.getSurveysAdmin(req.user.id);
     const surveysIDs = surveys.map(s => s.id);
     const answersTot = [];
-    for(const id of surveysIDs){
+    for (const id of surveysIDs) {
       const answers = await dao.getAnswers(id);
       const dataAnswersTot = [];
-      for(const a of answers){
-        const dataAnswer = await dao.getDataAnswers(a.idA);
-        dataAnswersTot.push({...a, dataAnswers: dataAnswer});
+      for (const a of answers) {
+        let dataAnswer = await dao.getDataAnswers(a.idA);
+        const finalDataAnswers = [];
+        for (const da of dataAnswer) {
+          const qType = await dao.getQuestionType(da.idQ);
+          if (qType) //se è a risposta multipla converto la string in un vettore
+            finalDataAnswers.push({ ...da, data: da.data.split(',').map(el => parseInt(el)) });
+          else
+            finalDataAnswers.push(da);
+        }
+
+        dataAnswersTot.push({ ...a, dataAnswers: finalDataAnswers });
       }
-      answersTot.push({idS: id, answers: dataAnswersTot});
+      answersTot.push({ idS: id, answers: dataAnswersTot });
     }
     res.status(201).json(answersTot);
 
-
-  } catch(err) {
-    console.log(err);
+  } catch (err) {
     res.status(503).json({ error: 'Database error during the creation of the survey.' });
   }
 })

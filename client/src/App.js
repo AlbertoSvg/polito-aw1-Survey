@@ -4,6 +4,7 @@ import { LoginForm } from "./components/LoginComponent.js";
 import AdminPage from "./components/AdminPage.js";
 import GuestPage from "./components/GuestPage.js";
 import CompileSurvey from "./components/CompileSurvey.js";
+import AnswersPage from "./components/AnswersPage.js";
 import './App.css';
 import API from "./services/Api.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
@@ -16,7 +17,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [isMounting, setIsMounting] = useState(true);
-  const [surveysChanged, setSurveysChanged] = useState(true); //indica se è dirty
+  const [dirty, setDirty] = useState(true); //indica se è dirty
   const [surveysAdmin, setSurveysAdmin] = useState([]);
   const [surveys, setSurveys] = useState([]);
   const [sending, setSending] = useState({ state: false, idS: -1 });
@@ -51,25 +52,25 @@ function App() {
     }
 
 
-    if (loggedIn && surveysChanged) {
+    if (loggedIn && dirty) {
       console.log("ADMIN");
       setLoading(true);
       loadSurveys().then(() => {
 
         loadAnswers().then(() => {
-          setSurveysChanged(false);
+          setDirty(false);
           setLoading(false);
         }).catch(err => {
-          setMessage({ msg: "Impossible to load answers! Please, try again later...", type: 'danger' });
+          setMessage({ msg: err.error + " Impossible to load answers! Please, try again later...", type: 'danger' });
           setLoading(false);
         })
 
       }).catch(err => {
-        setMessage({ msg: "Impossible to load surveys! Please, try again later...", type: 'danger' });
+        setMessage({ msg: err.error +" Impossible to load surveys! Please, try again later...", type: 'danger' });
         setLoading(false);
       });
     }
-  }, [surveysChanged, loggedIn]);
+  }, [dirty, loggedIn]);
 
   useEffect(() => {
     const loadSurveys = async () => {
@@ -77,26 +78,25 @@ function App() {
       setSurveys(surveys);
     };
 
-    if (!loggedIn && surveysChanged) {
+    if (!loggedIn && dirty) {
       console.log("USER");
       setLoading(true);
       loadSurveys().then(() => {
-        setSurveysChanged(false);
+        setDirty(false);
         setLoading(false);
       }).catch(err => {
-        setMessage({ msg: "Impossible to load surveys! Please, try again later...", type: 'danger' });
+        setMessage({ msg: err.error + " Impossible to load surveys! Please, try again later...", type: 'danger' });
         setLoading(false);
-        console.error(err);
       });
     }
-  }, [surveysChanged, loggedIn]);
+  }, [dirty, loggedIn]);
 
   const doLogIn = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
       setMessage({ msg: `Welcome, ${user.name}!`, type: 'success' });
       setLoggedIn(true);
-      setSurveysChanged(true);
+      setDirty(true);
       setUser(user);
       return null
     } catch (err) {
@@ -109,17 +109,17 @@ function App() {
     await API.logOut();
     setLoggedIn(false);
     setLoading(true);
-    setSurveysChanged(true);
+    setDirty(true);
   }
 
   const addSurvey = (survey) => {
     setSurveysAdmin(oldSurveys => [...oldSurveys, survey]); //da usare poi
 
     API.addNewSurvey(survey)
-      .then(() => setSurveysChanged(true))
+      .then(() => setDirty(true))
       .catch((err) => {
-        setMessage({ msg: ' Impossible to create a new survey. Please try again later.', type: 'danger' });
-        setSurveysChanged(true);
+        setMessage({ msg: err.error + ' Impossible to create a new survey. Please try again.', type: 'danger' });
+        setDirty(true);
       });
 
   };
@@ -130,12 +130,12 @@ function App() {
     API.sendSurveyAnswers(response)
       .then(() => {
         setSending({ state: false, idS: response.idS });
-        setSurveysChanged(true)
+        setDirty(true)
       })
       .catch((err) => {
         setSending({ state: false, idS: response.idS });
-        setMessage({ msg: ' Impossible to send the result. Please try again later.', type: 'danger' });
-        setSurveysChanged(true);
+        setMessage({ msg: err.error + ' Impossible to send the result. Please try again.', type: 'danger' });
+        setDirty(true);
       })
   }
 
@@ -148,19 +148,23 @@ function App() {
         </Route>
 
         <Route exact path="/admin/surveys">
-          {isMounting ? '' : <> {loggedIn ? <AdminPage loading={loading} setSurveysChanged={setSurveysChanged} surveys={surveysAdmin} answers={answers} message={message} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
+          {isMounting ? '' : <> {loggedIn ? <AdminPage loading={loading} setDirty={setDirty} surveys={surveysAdmin} answers={answers} message={message} setMessage={setMessage} doLogIn={doLogIn}></AdminPage> : <Redirect to="/surveys" />} </>}
         </Route>
 
         <Route exact path="/surveys">
-          {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage sending={sending} message={message} setMessage={setMessage} loading={loading} surveys={surveys} setSurveysChanged={setSurveysChanged} ></GuestPage>}</>}
+          {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <GuestPage sending={sending} message={message} setMessage={setMessage} loading={loading} surveys={surveys} setDirty={setDirty} ></GuestPage>}</>}
         </Route>
 
         <Route exact path="/surveys/compile">
-          {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <CompileSurvey sendSurveyAnswers={sendSurveyAnswers}></CompileSurvey>}</>}
+          {isMounting ? '' : <> {loggedIn ? <Redirect to="/admin/surveys" /> : <CompileSurvey setDirty={setDirty} sendSurveyAnswers={sendSurveyAnswers}></CompileSurvey>}</>}
         </Route>
 
         <Route exact path="/admin/add">
-          {isMounting ? '' : <> {loggedIn ? <Questionary addSurvey={addSurvey}></Questionary> : <Redirect to="/surveys" />} </>}
+          {isMounting ? '' : <> {loggedIn ? <Questionary setDirty={setDirty} addSurvey={addSurvey}></Questionary> : <Redirect to="/surveys" />} </>}
+        </Route>
+
+        <Route exact path="/admin/surveys/:idS/answers">
+          {isMounting ? '' : <> {loggedIn ? <AnswersPage setDirty={setDirty}></AnswersPage> : <Redirect to="/surveys" />} </>}
         </Route>
 
         <Route path="/">
