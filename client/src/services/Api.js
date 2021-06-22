@@ -117,7 +117,25 @@ function sendSurveyAnswers(answers) {
       }
     }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
   })
-}
+};
 
-const API = {getUserInfo, logIn, logOut, addNewSurvey, getAdminSurveys, getSurveys, sendSurveyAnswers};
+function getAnswers() {
+  return new Promise((resolve, reject) => {
+    fetch('/api/answers').then((response) => {
+      if (response.ok) {
+        response.json().then((answers) => {
+          const answersFinal = [...answers];
+          resolve(answersFinal);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+      else {
+        response.json().then((err) => {
+          reject(err);
+        }).catch(() => { reject({ error: "Cannot parse server response." }) });
+      }
+    }).catch(() => { reject({ error: "Cannot comunicate with server" }) });
+  });
+};
+
+const API = {getUserInfo, logIn, logOut, addNewSurvey, getAdminSurveys, getSurveys, sendSurveyAnswers, getAnswers};
 export default API;

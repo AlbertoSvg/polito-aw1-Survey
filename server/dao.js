@@ -120,7 +120,7 @@ exports.addAnswer = (answer) => {
             resolve(this.lastID);
         });
     })
-}
+};
 
 exports.addDataAnswer = (dataAnswer) => {
     return new Promise((resolve, reject) => {
@@ -133,4 +133,34 @@ exports.addDataAnswer = (dataAnswer) => {
             resolve(this.lastID);
         });
     })
+};
+
+exports.getAnswers = (idS) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM answers WHERE idS=?';
+        db.all(sql, [idS], (err,rows) => {
+            if(err) {
+                reject(err);
+                return;
+            }
+            const answers = rows.map((a) => ({idA: a.id, name: a.name}));
+            
+            resolve(answers);
+        });
+    });
+};
+
+exports.getDataAnswers = (idA) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM data_answers WHERE idA=?';
+        db.all(sql, [idA], (err,rows) => {
+            if(err) {
+                reject(err);
+                return;
+            }
+            const dataAnswers = rows.map((a) => ({data: a.data, idQ: a.idQ}));
+            
+            resolve(dataAnswers);
+        });
+    });
 }

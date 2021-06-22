@@ -168,7 +168,7 @@ app.post('/api/answers', async(req, res) => {
     name: req.body.name
   }
 
-  try{
+  try {
     const idA = await dao.addAnswer(newAnswer);
     const dataAnswers = req.body.answers.map( a => {return {idA: idA, idQ: a.idQ, data: a.data}});
     dataAnswers.forEach(async (dataAns) => {
@@ -176,6 +176,30 @@ app.post('/api/answers', async(req, res) => {
     });
     setTimeout(() => res.status(201).json({ id: idA }),2000);
   } catch(err) {
+    res.status(503).json({ error: 'Database error during the creation of the survey.' });
+  }
+});
+
+app.get('/api/answers', isLoggedIn, async (req, res) => {
+
+  try {
+    const surveys = await dao.getSurveysAdmin(req.user.id); 
+    const surveysIDs = surveys.map(s => s.id);
+    const answersTot = [];
+    for(const id of surveysIDs){
+      const answers = await dao.getAnswers(id);
+      const dataAnswersTot = [];
+      for(const a of answers){
+        const dataAnswer = await dao.getDataAnswers(a.idA);
+        dataAnswersTot.push({...a, dataAnswers: dataAnswer});
+      }
+      answersTot.push({idS: id, answers: dataAnswersTot});
+    }
+    res.status(201).json(answersTot);
+
+
+  } catch(err) {
+    console.log(err);
     res.status(503).json({ error: 'Database error during the creation of the survey.' });
   }
 })

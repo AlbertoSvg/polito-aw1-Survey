@@ -9,6 +9,7 @@ import { NavLink } from 'react-router-dom';
 function AdminPage(props) {
     const [message, setMessage] = useState(props.message);
     const responses = 0 //da passare poi come prop
+    console.log(props.answers);
 
     return <Container fluid>
         <Row className="vheight-100">
@@ -32,7 +33,7 @@ function AdminPage(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {props.surveys.map((s) => <SurveyRow key={s.id} survey={s} responses={responses}></SurveyRow>)}
+                            {props.surveys.map((s) => <SurveyRow key={s.id} survey={s} responses={props.answers.find(a => a.idS === s.id) ? props.answers.find(a => a.idS === s.id).answers.length : 0}></SurveyRow>)}
                         </tbody>
                     </Table>
                     <NavLink to="/admin/add">
@@ -67,7 +68,14 @@ function SurveyRowData(props) {
 
 function SurveyRowControl(props) {
 
-    return <td className="col col-2 text-right"><Button className="mt-1" size="sm" variant="outline-primary" onClick={() => !props.responses ? props.setPopup(true) : {}}> <Eye /> </Button></td>
+    return <td className="col col-2 text-right">
+        <NavLink to={{
+            pathname: '/admin/surveys/:idS/answers',
+            state: {/* da fare */}
+            }}>
+            <Button className="mt-1" size="sm" variant="outline-primary" onClick={() => !props.responses ? props.setPopup(true) : {}}> <Eye /> </Button>
+        </NavLink>
+    </td>
 
 }
 export default AdminPage;
