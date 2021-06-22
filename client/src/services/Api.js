@@ -32,7 +32,7 @@ async function getUserInfo() {
   if (response.ok) {
     return userInfo;
   } else {
-    throw userInfo;  // an object with the error coming from the server
+    throw userInfo;
   }
 }
 
@@ -53,7 +53,10 @@ function addNewSurvey(survey) {
       }
       else {
         response.json().then((err) => {
-          err ? err.error ? reject(err.error) : '' : '';        
+          if(err){
+            if(err.error)
+              reject(err.error);  
+          }   
         }).catch(() => { reject({ error: "Cannot parse server response." }) });
       }
     }).catch(() => { reject({ error: "Cannot comunicate with server" }) });

@@ -51,12 +51,9 @@ function App() {
       setAnswers(answers);
     }
 
-
     if (loggedIn && dirty) {
-      console.log("ADMIN");
       setLoading(true);
       loadSurveys().then(() => {
-
         loadAnswers().then(() => {
           setDirty(false);
           setLoading(false);
@@ -79,7 +76,6 @@ function App() {
     };
 
     if (!loggedIn && dirty) {
-      console.log("USER");
       setLoading(true);
       loadSurveys().then(() => {
         setDirty(false);

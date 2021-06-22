@@ -106,34 +106,15 @@ function Questionary(props) {
                                 <Button type="button" size="sm" className="btn-primary mt-1 addButton" onClick={() => setQuestions((old) => [...old, { id: old.length + 1, type: 0, min: 1, max: 1 }])}><PlusLg></PlusLg></Button>
                             </Col> : ''}
                     </Row>
-                    {questions.map((q, i) => <>
-                        <Form.Row key={`formRow-${q.id}`} className="mt-3">
-                            <Col sm={1}>
-                                <Button type="button" size="sm" className="mt-1 btn-danger outline-light" onClick={() => deleteQuestion(q.id)}><XLg /></Button>
-                            </Col>
-                            <Col sm={3} className="mb-3">
-                                <h3 className="mb-3">{`Question #${q.id}`}</h3>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Col sm={1}>
-                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { moveUp(i) }}> <ChevronUp /> </Button>
-                                    </Col>
-                                    <Col sm={1}>
-                                        <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { moveDown(i) }}> <ChevronDown /> </Button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Form.Row>
-                        <Question key={`quest-${q.id}`} errors={errors ? errors.qErr ? errors.qErr[i] ? errors.qErr[i] : {} : {} : {}} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
-                    </>
+                    {questions.map((q, i) =>
+                        <Question key={`quest-${q.id}`} errors={errors ? errors.qErr ? errors.qErr[i] ? errors.qErr[i] : '' : '' : ''} index={i} deleteQuestion={deleteQuestion} moveUp={moveUp} moveDown={moveDown} setQuestions={setQuestions} nQuestions={questions.length} question={q}></Question>
                     )}
                 </Form>
             </Col>
             <Col sm={3} className="formBackground"></Col>
         </Row>
 
-        <Button type="button" className="submitButton" size="lg" variant="outline-primary" onClick={handleSubmit}>Submit <Arrow90degRight/></Button>
+        <Button type="button" className="submitButton" size="lg" variant="outline-primary" onClick={handleSubmit}>Submit <Arrow90degRight /></Button>
         <NavLink to="/admin/surveys"><Button className="leftButton" size="lg" variant="outline-primary" onClick={() => props.setDirty(true)}><ChevronLeft /> Back</Button></NavLink>
         {submitted ? <Redirect to="/admin/surveys"></Redirect> : ''}
     </Container>
@@ -282,36 +263,64 @@ function Question(props) {
         });
     }
 
-    return <Row>
-        <Col sm={11}>
-            <div className="questionBorder">
-                <Form.Group as={Row} controlId="formQuestion">
-                    <Col sm={7}>
-                        <Form.Control size="md" type="text" placeholder="Question" isInvalid={props.errors ? props.errors.qTitle ? true : false : false} value={questionTitle} onChange={(ev) => handleQuestionTitle(ev)} />
-                        <Form.Control.Feedback type="invalid">Please enter a question title</Form.Control.Feedback>
-                    </Col>
-                    <Col sm={3}>
-                        <Form.Control as="select" value={props.question.type ? "Multiple choice" : "Text"} onChange={(ev) => handleQuestionType(ev)}>
-                            <option>Text</option>
-                            <option>Multiple choice</option>
-                        </Form.Control>
-                    </Col>
-                    <Col sm={2}>
-                        <div className="custom-control custom-switch">
-                            <input type="checkbox" className="custom-control-input" id={`customSwitch${props.question.id}`} onChange={(ev) => handleMin(ev)} />
-                            <label className="custom-control-label" htmlFor={`customSwitch${props.question.id}`}>Optional</label>
-                        </div>
-                    </Col>
-                </Form.Group>
-                {props.question.type === 1 ? props.question.choices.map((c) => <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>) : <></>}
-            </div>
-        </Col>
-        {props.question.id === props.nQuestions ?
-            <Col sm={1}>
-                <Button type="button" size="sm" className="btn-primary mt-1 addButton" onClick={() => { props.setQuestions((old) => [...old, { id: old.length + 1, type: 0, min: 1, max: 1 }]) }}><PlusLg></PlusLg></Button>
-            </Col> : <></>}
-    </Row>
+    return <>
+        <QuestionControl index={props.index} moveUp={props.moveUp} moveDown={props.moveDown} deleteQuestion={props.deleteQuestion} question={props.question}></QuestionControl>
+        <Row>
+            <Col sm={11}>
+                <div className="questionBorder">
+                    <Form.Group as={Row} controlId="formQuestion">
+                        <Col sm={7}>
+                            <Form.Control size="md" type="text" placeholder="Question" isInvalid={props.errors ? props.errors.qTitle ? true : false : false} value={questionTitle} onChange={(ev) => handleQuestionTitle(ev)} />
+                            <Form.Control.Feedback type="invalid">Please enter a question title</Form.Control.Feedback>
+                        </Col>
+                        <Col sm={3}>
+                            <Form.Control as="select" value={props.question.type ? "Multiple choice" : "Text"} onChange={(ev) => handleQuestionType(ev)}>
+                                <option>Text</option>
+                                <option>Multiple choice</option>
+                            </Form.Control>
+                        </Col>
+                        <Col sm={2}>
+                            <div className="custom-control custom-switch">
+                                <input type="checkbox" className="custom-control-input" id={`customSwitch${props.question.id}`} onChange={(ev) => handleMin(ev)} />
+                                <label className="custom-control-label" htmlFor={`customSwitch${props.question.id}`}>Optional</label>
+                            </div>
+                        </Col>
+                    </Form.Group>
+                    {props.question.type === 1 ? 
+                        props.question.choices.map((c) => 
+                            <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>) 
+                        : <></>}
+                </div>
+            </Col>
+            {props.question.id === props.nQuestions ?
+                <Col sm={1}>
+                    <Button type="button" size="sm" className="btn-primary mt-1 addButton" onClick={() => { props.setQuestions((old) => [...old, { id: old.length + 1, type: 0, min: 1, max: 1 }]) }}><PlusLg></PlusLg></Button>
+                </Col> : <></>}
+        </Row>
+    </>
 };
+
+function QuestionControl(props) {
+
+    return <Form.Row className="mt-3">
+        <Col sm={1}>
+            <Button type="button" size="sm" className="mt-1 btn-danger outline-light" onClick={() => props.deleteQuestion(props.question.id)}><XLg /></Button>
+        </Col>
+        <Col sm={3} className="mb-3">
+            <h3 className="mb-3">{`Question #${props.question.id}`}</h3>
+        </Col>
+        <Col>
+            <Row>
+                <Col sm={1}>
+                    <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { props.moveUp(props.index) }}> <ChevronUp /> </Button>
+                </Col>
+                <Col sm={1}>
+                    <Button className="mt-1" size="sm" variant="outline-success" onClick={() => { props.moveDown(props.index) }}> <ChevronDown /> </Button>
+                </Col>
+            </Row>
+        </Col>
+    </Form.Row>
+}
 
 function MultipleChoiceRow(props) {
     const choice = props.choice;

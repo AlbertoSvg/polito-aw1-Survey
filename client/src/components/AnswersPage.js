@@ -1,18 +1,14 @@
-import { Col, Container, Row, Button, Form, Alert } from "react-bootstrap";
+import { Col, Container, Row, Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { Redirect, useLocation, NavLink } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "react-bootstrap-icons";
 
 function AnswersPage(props) {
     const location = useLocation();
-    const [answers, setAnswers] = useState(location.state ? location.state.answers : []);
-    const [survey, setSurvey] = useState(location.state ? location.state.survey : {});
+    const answers = location.state ? location.state.answers : []
+    const survey = location.state ? location.state.survey : {}
     const [answerIndex, setAnswerIndex] = useState(answers ? answers.length ? 0 : -1 : -1);
-    console.log("survey");
-    console.log(survey);
-    console.log("answers");
-    console.log(answers);
-    console.log(answerIndex);
+
 
     const handleLeft = () => {
         if(answerIndex>0)
@@ -60,11 +56,7 @@ function AnswersPage(props) {
                                     </div>
                                 </Col>
                             </Row>
-                            {survey.questions.map((q, i) => <>
-                                <Form.Row key={`row-${i}`} className="mt-3" />
-                                <Question key={`quest-${i}`} answer={answers[answerIndex].dataAnswers.find(da => da.idQ === q.id)} question={q}></Question>
-                            </>
-                            )}
+                            {survey.questions.map((q, i) => <Question key={`quest-${i}`} answer={answers[answerIndex].dataAnswers.find(da => da.idQ === q.id)} question={q}></Question>)}
                         </Form>
                     </Col>
                     <Col sm={3} className="formBackground"></Col>
@@ -76,9 +68,11 @@ function AnswersPage(props) {
 
 
 function Question(props) {
-    const answer = props.answer ? props.answer : {};
+    const answer = props.answer ? props.answer : '';
 
-    return <Row>
+    return <>
+    <Form.Row className="mt-3" />
+    <Row>
         <Col sm={11}>
             <div className="questionBorder">
                 <Form.Group as={Row} controlId="formQuestion">
@@ -87,12 +81,13 @@ function Question(props) {
                     </Col>
                 </Form.Group>
                 {props.question.type === 1 ?
-                    props.question.choices.map((c, i) => <MultipleChoiceRow key={`choice-${c.id}`} answer={props.answer} choice={c} max={props.question.max}></MultipleChoiceRow>)
+                    props.question.choices.map((c, i) => <MultipleChoiceRow key={`choice-${c.id}`} answer={answer} choice={c} max={props.question.max}></MultipleChoiceRow>)
                     :
-                    <OpenQuestionResponse answer={props.answer}></OpenQuestionResponse>}
+                    <OpenQuestionResponse answer={answer}></OpenQuestionResponse>}
             </div>
         </Col>
     </Row>
+    </>
 }
 
 

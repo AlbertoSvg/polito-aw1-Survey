@@ -8,7 +8,7 @@ function CompileSurvey(props) {
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const [submitted, setSubmitted] = useState(false);
-    const [survey, setSurvey] = useState(location.state ? location.state.survey : {});
+    const survey = location.state ? location.state.survey : '';
     const [answers, setAnswers] = useState([]);
     const [name, setName] = useState('');
 
@@ -76,11 +76,7 @@ function CompileSurvey(props) {
                                     </div>
                                 </Col>
                             </Row>
-                            {survey.questions.map((q, i) => <>
-                                <Form.Row key={`row-${i}`} className="mt-3" />
-                                <Question key={`quest-${i}`} errors={errors} setAnswers={setAnswers} answers={answers} question={q}></Question>
-                            </>
-                            )}
+                            {survey.questions.map((q, i) => <Question key={`quest-${i}`} errors={errors} setAnswers={setAnswers} answers={answers} question={q}></Question>)}
                         </Form>
                     </Col>
                     <Col sm={3} className="formBackground"></Col>
@@ -116,7 +112,9 @@ function Question(props) {
         return err;
     }
 
-    return <Row>
+    return <>
+    <Form.Row className="mt-3" />
+    <Row>
         <Col sm={11}>
             {checkErrorCondition(props.question.type).mandatory ?
                 <small className="text-danger">This question is mandatory</small> :
@@ -134,6 +132,7 @@ function Question(props) {
             </div>
         </Col>
     </Row>
+    </>
 }
 
 function OpenQuestionResponse(props) {
