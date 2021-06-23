@@ -87,7 +87,7 @@ function Questionary(props) {
 
     return <Container fluid>
         <Row className="justify-content-center below-nav">
-            <h1>Create a new Survey</h1>
+            <h1 className="display-4">Create a new Survey</h1>
         </Row>
         <Row className="justify-content-center vheight-100 below-nav">
             <Col sm={3}></Col>
@@ -96,7 +96,9 @@ function Questionary(props) {
                 <Form>
                     <Row>
                         <Col sm={11}>
+                            <h1 className="font-italic">Survey Title</h1>
                             <Form.Group controlId="formTitle">
+
                                 <Form.Control required size="lg" type="text" isInvalid={errors.titleError ? true : false} placeholder="Enter Title" value={title} onChange={(ev) => handleTitle(ev)} />
                                 <Form.Control.Feedback type="invalid">Please enter a title</Form.Control.Feedback>
                             </Form.Group>
@@ -286,9 +288,9 @@ function Question(props) {
                             </div>
                         </Col>
                     </Form.Group>
-                    {props.question.type === 1 ? 
-                        props.question.choices.map((c) => 
-                            <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>) 
+                    {props.question.type === 1 ?
+                        props.question.choices.map((c) =>
+                            <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>)
                         : <></>}
                 </div>
             </Col>
@@ -307,7 +309,7 @@ function QuestionControl(props) {
             <Button type="button" size="sm" className="mt-1 btn-danger outline-light" onClick={() => props.deleteQuestion(props.question.id)}><XLg /></Button>
         </Col>
         <Col sm={3} className="mb-3">
-            <h3 className="mb-3">{`Question #${props.question.id}`}</h3>
+            <h3 className="mb-3 font-italic">{`Question #${props.question.id}`}</h3>
         </Col>
         <Col>
             <Row>
