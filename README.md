@@ -41,17 +41,17 @@
 
 ## Database Tables
 
-- Table `admins` - contains id, email, name, hash
+- Table `admins` - contains *id*, *email*, *name*, *hash*
     > This table contains all the informations of the admins of the application, including the bcrypted password.
-- Table `surveys` - contains id, title, admin
+- Table `surveys` - contains *id*, *title*, *admin*
     > This table contains the informations of all the created surveys.
-- Table `questions` - contains id, title, type, idS, min, max
+- Table `questions` - contains *id*, *title*, *type*, *idS*, *min*, *max*
     > This table contains the informations of all the created questions for every survey, including the type (0 = open question, 1 = multiple choice question) of question and the constraints (min, max).
-- Table `choices` - contains id, title, idQ
+- Table `choices` - contains *id*, *title*, *idQ*
     > This table contains the informations of all the differente choices for all the multiple choice questions (type = 1).
-- Table `answers` - contains id, name, idS
+- Table `answers` - contains *id*, *name*, *idS*
     > This table contains the list of all the answers for every survey with the name of the person that has compiled that survey.
-- Table `data_answers` -  contains id, data, idQ, idA
+- Table `data_answers` -  contains *id*, *data*, *idQ*, *idA*
     > This table contains the informations for every answer to every question like the string that the client wrote in the open questions or, for the multiple choice questions, a string that is the concatenation of the ids of the choices that the client has selected.
  
 
