@@ -161,10 +161,6 @@ small {
   
 }
 
-.pMax {
-  display:inline-block;
-}
-
 .submitButton {
   position: fixed;
   bottom: 0;
