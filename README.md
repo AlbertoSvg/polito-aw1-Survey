@@ -40,125 +40,125 @@
         }
         ````
   - **Success Response:**
-      *Code:* `200 OK`
-      *Content:*
-        ````
-        {"id":1,"username":"admin1@polito.it","name":"Bob"}
-        ````
+    *  *Code:* `200 OK`
+    *  *Content:*
+          ````
+          {"id":1,"username":"admin1@polito.it","name":"Bob"}
+          ````
   - **Error Response:**
-      *Code:* `401 Unauthorized`
-      *Content:* 
-        ```
-        {"message":"Username or password wrong"}
-        ````
-        
+    *  *Code:* `401 Unauthorized`
+    *  *Content:* 
+          ```
+          {"message":"Username or password wrong"}
+          ````
+          
 - GET `/api/sessions/current`
   - **Description:** to retrieve the current session if exist
   - **Request parameters:** Session cookie
   - **Request body content:** *None*
   - **Success Response:**
-      *Code:* `200 OK`
-      *Content:*
-        ````
-        {"id":1,"username":"admin1@polito.it","name":"Bob"}
-        ````
+    *  *Code:* `200 OK`
+    *  *Content:*
+          ````
+          {"id":1,"username":"admin1@polito.it","name":"Bob"}
+          ````
   - **Error Response:**
-      *Code:* `401 Unauthorized`
-      *Content:* 
-         ```
-         {"message":"Username or password wrong"}
-         ````
+    *  *Code:* `401 Unauthorized`
+    *  *Content:* 
+          ```
+          {"message":"Username or password wrong"}
+          ````
 
 - DELETE `/api/sessions/current`
   - **Description:** to perform the logout
   - **Request parameters:** Session cookie
   - **Request body content:** *None*
   - **Success Response:**
-      *Code:* `200 OK`
-      *Content*: None
+    *  *Code:* `200 OK`
+    *  *Content*: None
   - **Error Response:**
-      *Code:* `401 Unauthorized`
-      *Content:* 
-         ```
-         {"message":"Username or password wrong"}
-         ````
+    *  *Code:* `401 Unauthorized`
+    *  *Content:* 
+          ```
+          {"message":"Username or password wrong"}
+          ````
 
 - GET `/api/surveys`
   - **Description:** to retrieve all the surveys (for non logged in users)
   - **Request parameters:** *None*
   - **Request body content:** *None*
   - **Success Response:**
-      *Code:* `200 OK`
-      *Content*: Surveys array with all the informations abount them
+    *  *Code:* `200 OK`
+    *  *Content*: Surveys array with all the informations abount them
   - **Error Response:**
-      *Code:* `503 Service Unavailable`
-      *Content:* 
-         ```
-         { error: 'Database error during the retrievement of the surveys.' }
-         ````
+    *  *Code:* `503 Service Unavailable`
+    *  *Content:* 
+          ```
+          { error: 'Database error during the retrievement of the surveys.' }
+          ````
 
 - GET `/api/admin/surveys`
   - **Description:** to retrieve the surveys that the current logged admin has created
   - **Request parameters:** *None*
   - **Request body content:** *None*
   - **Success Response:**
-      *Code:* `200 Ok`
-      *Content*: Surveys array with all the informations abount them
+    *  *Code:* `200 Ok`
+    *  *Content*: Surveys array with all the informations abount them
   - **Error Response:**
-      *Code:* `503 Service Unavailable`
-      *Content:* 
-         ```
-         { error: 'Database error during the retrievement of the surveys.' }
-         ````
+    *  *Code:* `503 Service Unavailable`
+    *  *Content:* 
+          ```
+          { error: 'Database error during the retrievement of the surveys.' }
+          ````
 
 - POST `/api/surveys`
   - **Description:** to create a new the survey and save it to the database
   - **Request parameters:** *None*
   - **Request body content:** The informations abount the created survey
   - **Success Response:**
-      *Code:* `201 Created`
-      *Content*:
-        ````
-        { id: *created survey id* }
-        ````
+    *  *Code:* `201 Created`
+    *  *Content*:
+          ````
+          { id: *created survey id* }
+          ````
   - **Error Response:**
-      *Code:* `503 Service Unavailable`
-      *Content:* 
-         ```
-         { error: 'Database error during the creation of the survey.' }
-         ````
+    *  *Code:* `503 Service Unavailable`
+    *  *Content:* 
+          ```
+          { error: 'Database error during the creation of the survey.' }
+          ````
 
 - POST `/api/answers`
   - **Description:** to save a new answer to a survey into the database
   - **Request parameters:** *None*
   - **Request body content:** The informations abount the answer
   - **Success Response:**
-      *Code:* `201 Created`
-      *Content*:
-        ````
-        { id: *created answer id* }
-        ````
+    *  *Code:* `201 Created`
+    *  *Content*:
+          ````
+          { id: *created answer id* }
+          ````
   - **Error Response:**
-      *Code:* `503 Service Unavailable`
-      *Content:* 
-         ```
-         { error: 'Database error while saving the answer.' }
-         ````
+    *  *Code:* `503 Service Unavailable`
+    *  *Content:* 
+          ```
+          { error: 'Database error while saving the answer.' }
+          ````
 
 - GET `/api/answers`
   - **Description:** to retrieve all the answers to survey
   - **Request parameters:** *None*
   - **Request body content:** The informations abount the answers
   - **Success Response:**
-      *Code:* `200 Ok`
-      *Content*: answers array with all the informations about every answer
+    *  *Code:* `200 Ok`
+    *  *Content*: answers array with all the informations about every answer
   - **Error Response:**
-      *Code:* `503 Service Unavailable`
-      *Content:* 
-         ```
-         { error: 'Database error during the retrievement of the answers.' }
-         ````
-  
+    *  *Code:* `503 Service Unavailable`
+    *  *Content:* 
+          ```
+          { error: 'Database error during the retrievement of the answers.' }
+          ````
+    
 
 ## Database Tables
 
