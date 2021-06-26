@@ -177,6 +177,7 @@
  
 
 ## Main React Components
+- `App` (in `App.js`): this is the principal component that contains all the routes for the other components. Here there are the useEffect functions that are needed for the authentication and the retrievement of the surveys and answers. In this component are also defined some other usefull functions like *doLogIn, doLogOut, addSurvey and sendSurveyAnswers* used to perform the main operations of the application by contacting the server through some APIs. All these functions interface with some (principal) states for saving the information client side. Then these states are passed to the other main application components, that they will use them to perform their tasks.  
 
 - `LoginForm` (in `LoginComponent.js`): this component offers a login form where a user can insert his username and password to login in the application.
 
