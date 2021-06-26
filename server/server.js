@@ -192,7 +192,7 @@ app.post('/api/answers', [
     });
     res.status(201).json({ id: idA });
   } catch (err) {
-    res.status(503).json({ error: 'Database error during the creation of the survey.' });
+    res.status(503).json({ error: 'Database error while saving the answer.' });
   }
 });
 
@@ -222,10 +222,10 @@ app.get('/api/answers', isLoggedIn, async (req, res) => {
       }
       answersTot.push({ idS: id, answers: dataAnswersTot });
     }
-    res.status(201).json(answersTot);
+    res.status(200).json(answersTot);
 
   } catch (err) {
-    res.status(503).json({ error: 'Database error during the creation of the survey.' });
+    res.status(503).json({ error: 'Database error during the retrievement of the answers.' });
   }
 })
 

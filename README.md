@@ -4,40 +4,161 @@
 ## React Client Application Routes
 
 - Route `/`: 
-  - Page content: has no content.
-  - Purpose: used as a default route that redirect to `/surveys` if the client is not logged in or to `/admin/surveys` if the client is logged.
+  - *Page content*: has no content.
+  - *Purpose*: used as a default route that redirect to `/surveys` if the client is not logged in or to `/admin/surveys` if the client is logged.
 - Route `/login`:
-  - Page content: login page.
-  - Purpose: can insert username and password to login in the application.
+  - *Page content*: login page.
+  - *Purpose*: can insert username and password to login in the application.
 - Route `/surveys`: 
-  - Page content: this route contains the page for the non logged users where all the surveys are listed.
-  - Purpose: the user can choose a survey to answer.
+  - *Page content*: this route contains the page for the non logged users where all the surveys are listed.
+  - *Purpose*: the user can choose a survey to answer.
 - Route `/surveys/compile`:
-  - Page content: compilation page for a survey.
-  - Purpose: in this page the user can answer to the survey that has selected from the table.
+  - *Page content*: compilation page for a survey.
+  - *Purpose*: in this page the user can answer to the survey that has selected from the table.
 - Route `/admin/surveys`:
-  - Page content: this route contains the page for the logged users (admins) where are listed all the surveys that the current admin has created.
-  - Purpose: this page offers the possibility to create a new survey or visualize the answers that the users gave to the survey created before.
+  - *Page content*: this route contains the page for the logged users (admins) where are listed all the surveys that the current admin has created.
+  - *Purpose*: this page offers the possibility to create a new survey or visualize the answers that the users gave to the survey created before.
 - Route `/admin/add`:
-  - Page content: this route contains the survey creation page.
-  - Purpose: in this page an admin can create and customize a new survey. He can choose a title for the survey, add or remove a question, choose the type of question, insert a question title, add or remove choices for the multiple choice questions or switch the questions order.
+  - *Page content*: this route contains the survey creation page.
+  - *Purpose*: in this page an admin can create and customize a new survey. He can choose a title for the survey, add or remove a question, choose the type of question, insert a question title, add or remove choices for the multiple choice questions or switch the questions order.
 - Route `/admin/surveys/:idS/answers`:
-  - Page content: this page contains the answers givev by the users to a particular survey and you can switch from the answers of a user to the answers of another.
-  - Purpose: the admin can inspect the responses that a survey has received. 
-  - Param `:idS`: id of the selected survey.
+  - *Page content*: this page contains the answers givev by the users to a particular survey and you can switch from the answers of a user to the answers of another.
+  - *Purpose*: the admin can inspect the responses that a survey has received. 
+  - *Param* `:idS`: id of the selected survey.
 
 ## API Server
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+- POST `/api/sessions`
+  - **Description:** for performing the login
+  - **Request parameters:** *None*
+  - **Request body content:**
+    * *Content-Type:* `application/json`
+        ````
+        {
+          "username":"admin1@polito.it",
+          "password":"password1"
+        }
+        ````
+  - **Success Response:**
+      *Code:* `200 OK`
+      *Content:*
+        ````
+        {"id":1,"username":"admin1@polito.it","name":"Bob"}
+        ````
+  - **Error Response:**
+      *Code:* `401 Unauthorized`
+      *Content:* 
+        ```
+        {"message":"Username or password wrong"}
+        ````
+        
+- GET `/api/sessions/current`
+  - **Description:** to retrieve the current session if exist
+  - **Request parameters:** Session cookie
+  - **Request body content:** *None*
+  - **Success Response:**
+      *Code:* `200 OK`
+      *Content:*
+        ````
+        {"id":1,"username":"admin1@polito.it","name":"Bob"}
+        ````
+  - **Error Response:**
+      *Code:* `401 Unauthorized`
+      *Content:* 
+         ```
+         {"message":"Username or password wrong"}
+         ````
+
+- DELETE `/api/sessions/current`
+  - **Description:** to perform the logout
+  - **Request parameters:** Session cookie
+  - **Request body content:** *None*
+  - **Success Response:**
+      *Code:* `200 OK`
+      *Content*: None
+  - **Error Response:**
+      *Code:* `401 Unauthorized`
+      *Content:* 
+         ```
+         {"message":"Username or password wrong"}
+         ````
+
+- GET `/api/surveys`
+  - **Description:** to retrieve all the surveys (for non logged in users)
+  - **Request parameters:** *None*
+  - **Request body content:** *None*
+  - **Success Response:**
+      *Code:* `200 OK`
+      *Content*: Surveys array with all the informations abount them
+  - **Error Response:**
+      *Code:* `503 Service Unavailable`
+      *Content:* 
+         ```
+         { error: 'Database error during the retrievement of the surveys.' }
+         ````
+
+- GET `/api/admin/surveys`
+  - **Description:** to retrieve the surveys that the current logged admin has created
+  - **Request parameters:** *None*
+  - **Request body content:** *None*
+  - **Success Response:**
+      *Code:* `200 Ok`
+      *Content*: Surveys array with all the informations abount them
+  - **Error Response:**
+      *Code:* `503 Service Unavailable`
+      *Content:* 
+         ```
+         { error: 'Database error during the retrievement of the surveys.' }
+         ````
+
+- POST `/api/surveys`
+  - **Description:** to create a new the survey and save it to the database
+  - **Request parameters:** *None*
+  - **Request body content:** The informations abount the created survey
+  - **Success Response:**
+      *Code:* `201 Created`
+      *Content*:
+        ````
+        { id: *created survey id* }
+        ````
+  - **Error Response:**
+      *Code:* `503 Service Unavailable`
+      *Content:* 
+         ```
+         { error: 'Database error during the creation of the survey.' }
+         ````
+
+- POST `/api/answers`
+  - **Description:** to save a new answer to a survey into the database
+  - **Request parameters:** *None*
+  - **Request body content:** The informations abount the answer
+  - **Success Response:**
+      *Code:* `201 Created`
+      *Content*:
+        ````
+        { id: *created answer id* }
+        ````
+  - **Error Response:**
+      *Code:* `503 Service Unavailable`
+      *Content:* 
+         ```
+         { error: 'Database error while saving the answer.' }
+         ````
+
+- GET `/api/answers`
+  - **Description:** to retrieve all the answers to survey
+  - **Request parameters:** *None*
+  - **Request body content:** The informations abount the answers
+  - **Success Response:**
+      *Code:* `200 Ok`
+      *Content*: answers array with all the informations about every answer
+  - **Error Response:**
+      *Code:* `503 Service Unavailable`
+      *Content:* 
+         ```
+         { error: 'Database error during the retrievement of the answers.' }
+         ````
+  
 
 ## Database Tables
 
@@ -76,5 +197,12 @@
 
 ## Users Credentials
 
-- User email: admin1@polito.it, password: password1 (plus any other requested info)
-- User email: admin2@polito.it, password: password2 (plus any other requested info)
+- User email: `admin1@polito.it`, password: `password1`
+  - Created surveys:
+    - *Sondaggio McDonald*
+    - *Sondaggio cinema*
+    - *Sondaggio vacanze*
+- User email: `admin2@polito.it`, password: `password2`
+  - Created surveys:
+    - *Sondaggio mezzi di trasporto*
+    - *Sondaggio social network*
