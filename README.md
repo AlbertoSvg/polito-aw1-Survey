@@ -119,7 +119,7 @@
     *  *Code:* `201 Created`
     *  *Content*:
           ````
-          { id: *created survey id* }
+          { id: *created_survey_id* }
           ````
   - **Error Response:**
     *  *Code:* `503 Service Unavailable`
@@ -136,7 +136,7 @@
     *  *Code:* `201 Created`
     *  *Content*:
           ````
-          { id: *created answer id* }
+          { id: *created_answer_id* }
           ````
   - **Error Response:**
     *  *Code:* `503 Service Unavailable`
