@@ -75,7 +75,7 @@
   - **Request body content:** *None*
   - **Success Response:**
     *  *Code:* `200 OK`
-    *  *Content*: None
+    *  *Content*: *None*
   - **Error Response:**
     *  *Code:* `401 Unauthorized`
     *  *Content:* 
