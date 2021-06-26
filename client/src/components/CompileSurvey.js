@@ -11,6 +11,8 @@ function CompileSurvey(props) {
     const survey = location.state ? location.state.survey : '';
     const [answers, setAnswers] = useState([]);
     const [name, setName] = useState('');
+    console.log(survey);
+    console.log(answers);
 
     const handleName = (value) => {
         if (value) {
@@ -24,7 +26,14 @@ function CompileSurvey(props) {
     const checkValidation = () => {
         const mandatoryQuestions = survey.questions.filter(q => q.min !== 0);
         const answersErrors = mandatoryQuestions.map((q) => answers.filter(a => a.idQ === q.id).length ? { idQ: q.id, error: false } : { idQ: q.id, error: true });
-        const openAnswersMaxCharErr = survey.questions.map(q => q.type === 0 ? answers.filter(a => a.idQ === q.id && a.data.length <= 200).length ? { idQ: q.id, error: false } : { idQ: q.id, error: true } : { idQ: q.id, error: false });
+        const openAnswersMaxCharErr = 
+        survey.questions.map(q => q.type === 0 ?
+            answers.filter(a => a.idQ === q.id).length ===0 ?
+                    {idQ:q.id, error: false} 
+                    : answers.filter(a => a.idQ === q.id && a.data.length <= 200).length ?
+                             { idQ: q.id, error: false } 
+                             : { idQ: q.id, error: true } 
+            : { idQ: q.id, error: false });
         const nameError = name ? false : true;
         const errs = { nameError: nameError, answersErrors: answersErrors, openAnswersMaxCharErr: openAnswersMaxCharErr };
         setErrors(errs);
@@ -199,12 +208,11 @@ function MultipleChoiceRow(props) {
                 else {
                     props.setAnswers((old) => {
                         return old.map(oldA => {
-                            const oldData = oldA.data;
                             if (oldA.idQ === props.questionId) {
-                                const newData = oldData;
-                                if (oldData.length < props.max)
+                                const newData = [...oldA.data];
+                                if (newData.length < props.max)
                                     newData.push(choice.id);
-
+                                
                                 return { ...oldA, data: newData };
                             } else {
                                 return oldA;

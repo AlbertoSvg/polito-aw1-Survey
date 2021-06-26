@@ -1,5 +1,5 @@
 import { Col, Container, Row, Button, Form, InputGroup, Alert } from "react-bootstrap";
-import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle, Arrow90degRight, ChevronLeft } from "react-bootstrap-icons";
+import { ChevronUp, ChevronDown, PlusCircle, PlusLg, XLg, XCircle, Arrow90degRight } from "react-bootstrap-icons";
 import { useState } from "react";
 import { Redirect, NavLink } from "react-router-dom";
 
@@ -10,6 +10,8 @@ function Questionary(props) {
     const [title, setTitle] = useState('');
     const [questions, setQuestions] = useState([]);
     const [submitted, setSubmitted] = useState(false);
+
+    console.log(questions);
 
     const handleTitle = (event) => {
         const value = event.target.value;
@@ -117,7 +119,7 @@ function Questionary(props) {
         </Row>
 
         <Button type="button" className="submitButton" size="lg" variant="outline-primary" onClick={handleSubmit}>Submit <Arrow90degRight /></Button>
-        <NavLink to="/admin/surveys"><Button className="leftButton" size="lg" variant="outline-primary" onClick={() => props.setDirty(true)}><ChevronLeft /> Back</Button></NavLink>
+        <NavLink to="/admin/surveys"><Button className="leftButton" size="lg" variant="outline-danger" onClick={() => props.setDirty(true)}>Cancel</Button></NavLink>
         {submitted ? <Redirect to="/admin/surveys"></Redirect> : ''}
     </Container>
 };
@@ -126,13 +128,11 @@ function Questionary(props) {
 function Question(props) {
     //0 = text, 1 = multiple choice
     const questionChoices = props.question.choices ? props.question.choices : [];
-    const [questionTitle, setQuestionTitle] = useState(props.question.title ? props.question.title : '');
 
     const handleQuestionTitle = (event) => {
         const value = event.target.value;
 
         if (value) {
-            setQuestionTitle(value);
             props.setQuestions((oldQuestions) => {
                 return oldQuestions.map((q) => {
                     if (q.id === props.question.id)
@@ -144,7 +144,6 @@ function Question(props) {
             });
         }
         else {
-            setQuestionTitle('');
             props.setQuestions((oldQuestions) => {
                 return oldQuestions.map((q) => {
                     if (q.id === props.question.id)
@@ -272,7 +271,7 @@ function Question(props) {
                 <div className="questionBorder">
                     <Form.Group as={Row} controlId="formQuestion">
                         <Col sm={7}>
-                            <Form.Control size="md" type="text" placeholder="Question" isInvalid={props.errors ? props.errors.qTitle ? true : false : false} value={questionTitle} onChange={(ev) => handleQuestionTitle(ev)} />
+                            <Form.Control size="md" type="text" placeholder="Question" isInvalid={props.errors ? props.errors.qTitle ? true : false : false} value={props.question.title ? props.question.title : ''} onChange={(ev) => handleQuestionTitle(ev)} />
                             <Form.Control.Feedback type="invalid">Please enter a question title</Form.Control.Feedback>
                         </Col>
                         <Col sm={3}>
@@ -283,14 +282,14 @@ function Question(props) {
                         </Col>
                         <Col sm={2}>
                             <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" id={`customSwitch${props.question.id}`} onChange={(ev) => handleMin(ev)} />
+                                <input type="checkbox" className="custom-control-input" id={`customSwitch${props.question.id}`} checked={props.question.min ? false : true} onChange={(ev) => handleMin(ev)} />
                                 <label className="custom-control-label" htmlFor={`customSwitch${props.question.id}`}>Optional</label>
                             </div>
                         </Col>
                     </Form.Group>
                     {props.question.type === 1 ?
                         props.question.choices.map((c) =>
-                            <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>)
+                            <MultipleChoiceRow key={`choice-${props.question.id}-${c.id}`} max={props.question.max ? props.question.max : ''} errors={props.errors ? props.errors.cId : ''} deleteChoice={deleteChoice} nChoices={questionChoices.length} choice={c} addChoice={addChoice} handleChoice={handleChoice} handleMax={handleMax}></MultipleChoiceRow>)
                         : <></>}
                 </div>
             </Col>
@@ -350,7 +349,7 @@ function MultipleChoiceRow(props) {
                     <Form.Label column>Max: </Form.Label>
                 </Col>
                 <Col sm={1}>
-                    <Form.Control className="mt-1" as="select" defaultValue="number" onChange={(ev) => { props.handleMax(ev) }}>
+                    <Form.Control className="mt-1" as="select" value={props.max ? props.max : '1'} onChange={(ev) => { props.handleMax(ev) }}>
                         {[...Array(props.nChoices)].map((n, i) => <option key={`opt${i}`}>{i + 1}</option>)}
                     </Form.Control>
                 </Col> </> :
