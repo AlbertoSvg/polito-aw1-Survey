@@ -157,7 +157,6 @@ app.post('/api/surveys', [
     const questions = [...req.body.questions];
     for (const q of questions) {
       const idQ = await dao.addQuestion(q, idS);
-      console.log(idQ);
       for (const c of q.choices) {
         const idC = await dao.addChoice(c, idQ);
       }

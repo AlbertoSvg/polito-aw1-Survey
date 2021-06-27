@@ -47,7 +47,7 @@ function LoginForm(props) {
                 if (err) {
                     setErrorMessage(err);
                 }
-            }).catch(() => console.log('failed'));
+            }).catch(() => setErrorMessage('Unable to login'));
         }
         else {
             setErrorMessage('Unable to login');

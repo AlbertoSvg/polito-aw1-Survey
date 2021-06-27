@@ -22,7 +22,7 @@
   - *Page content*: this route contains the survey creation page.
   - *Purpose*: in this page an admin can create and customize a new survey. He can choose a title for the survey, add or remove a question, choose the type of question, insert a question title, add or remove choices for the multiple choice questions or switch the questions order.
 - Route `/admin/surveys/:idS/answers`:
-  - *Page content*: this page contains the answers givev by the users to a particular survey and you can switch from the answers of a user to the answers of another.
+  - *Page content*: this page contains the answers given by the users to a particular survey and you can switch from the answers of a user to the answers of another.
   - *Purpose*: the admin can inspect the responses that a survey has received. 
   - *Param* `:idS`: id of the selected survey.
 
@@ -89,7 +89,7 @@
   - **Request body content:** *None*
   - **Success Response:**
     *  *Code:* `200 OK`
-    *  *Content*: Surveys array with all the informations abount them
+    *  *Content*: Surveys array with all the informations about them
   - **Error Response:**
     *  *Code:* `503 Service Unavailable`
     *  *Content:* 
@@ -114,7 +114,7 @@
 - POST `/api/surveys`
   - **Description:** to create a new the survey and save it to the database
   - **Request parameters:** *None*
-  - **Request body content:** The informations abount the created survey
+  - **Request body content:** The informations about the created survey
   - **Success Response:**
     *  *Code:* `201 Created`
     *  *Content*:
@@ -131,7 +131,7 @@
 - POST `/api/answers`
   - **Description:** to save a new answer to a survey into the database
   - **Request parameters:** *None*
-  - **Request body content:** The informations abount the answer
+  - **Request body content:** The informations about the answer
   - **Success Response:**
     *  *Code:* `201 Created`
     *  *Content*:
@@ -162,24 +162,24 @@
 
 ## Database Tables
 
-- Table `admins` - contains *id*, *email*, *name*, *hash*
+- Table `admins` - contains *`id, email, name, hash`*
     > This table contains all the informations of the admins of the application, including the bcrypted password.
-- Table `surveys` - contains *id*, *title*, *admin*
+- Table `surveys` - contains *`id, title, admin`*
     > This table contains the informations of all the created surveys.
-- Table `questions` - contains *id*, *title*, *type*, *idS*, *min*, *max*
+- Table `questions` - contains *`id, title, type, idS, min, max`*
     > This table contains the informations of all the created questions for every survey, including the type (0 = open question, 1 = multiple choice question) of question and the constraints (min, max).
-- Table `choices` - contains *id*, *title*, *idQ*
-    > This table contains the informations of all the differente choices for all the multiple choice questions (type = 1).
-- Table `answers` - contains *id*, *name*, *idS*
+- Table `choices` - contains *`id, title, idQ`*
+    > This table contains the informations of all the different choices for all the multiple choice questions (type = 1).
+- Table `answers` - contains *`id, name, idS`*
     > This table contains the list of all the answers for every survey with the name of the person that has compiled that survey.
-- Table `data_answers` -  contains *id*, *data*, *idQ*, *idA*
-    > This table contains the informations for every answer to every question like the string that the client wrote in the open questions or, for the multiple choice questions, a string that is the concatenation of the ids of the choices that the client has selected.
+- Table `data_answers` -  contains *`id, data, idQ, idA`*
+    > This table contains the informations for every answer to every question like the text that the client wrote in the open questions or, for the multiple choice questions, a string that is the concatenation of the IDs of the choices that the client has selected.
  
 
 ## Main React Components
-- `App` (in `App.js`): this is the principal component that contains all the routes for the other components. Here there are the useEffect functions that are needed for the authentication and the retrievement of the surveys and answers. In this component are also defined some other usefull functions like *doLogIn, doLogOut, addSurvey and sendSurveyAnswers* used to perform the main operations of the application by contacting the server through some APIs. All these functions interface with some (principal) states for saving the information client side. Then these states are passed to the other main application components, that they will use them to perform their tasks.  
+- `App` (in `App.js`): this is the principal component that contains all the routes for the other components. Here there are the useEffect functions that are needed for the authentication and the retrievement of the surveys and answers. In this component are also defined some other usefull functions like *doLogIn, doLogOut, addSurvey and sendSurveyAnswers* used to perform the main operations of the application by contacting the server through some APIs. All these functions interface with some (principal) states for mantaining the informations client side. Then these states are passed to the other main application components, that they will use them to perform their tasks.  
 
-- `LoginForm` (in `LoginComponent.js`): this component offers a login form where a user can insert his username and password to login in the application.
+- `LoginForm` (in `LoginComponent.js`): this component offers a login form where a user can insert his username and password to login.
 
 - `AdminPage` (in `AdminPage.js`): this component contains a table with all the survey that the logged admin has created and here can inspect how many answers has received and can click on a button to inspect all the answers that a survey as received or can create a new survey by clicking on the + button placed at the bottom right.
 

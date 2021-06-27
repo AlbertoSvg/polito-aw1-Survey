@@ -11,8 +11,6 @@ function Questionary(props) {
     const [questions, setQuestions] = useState([]);
     const [submitted, setSubmitted] = useState(false);
 
-    console.log(questions);
-
     const handleTitle = (event) => {
         const value = event.target.value;
 

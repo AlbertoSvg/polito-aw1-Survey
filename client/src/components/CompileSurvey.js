@@ -11,8 +11,6 @@ function CompileSurvey(props) {
     const survey = location.state ? location.state.survey : '';
     const [answers, setAnswers] = useState([]);
     const [name, setName] = useState('');
-    console.log(survey);
-    console.log(answers);
 
     const handleName = (value) => {
         if (value) {
@@ -227,7 +225,6 @@ function MultipleChoiceRow(props) {
                 const newAnswers = old.map(oldA => {
                     if (oldA.idQ === props.questionId) {
                         const index = oldA.data.findIndex((d) => d === choice.id);
-                        console.log("index: " + index);
                         if (index !== -1) {
                             const data = oldA.data;
                             data.splice(index, 1);
