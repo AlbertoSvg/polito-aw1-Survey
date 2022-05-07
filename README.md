@@ -1,5 +1,4 @@
 # Survey App
-## Student: s280127 SOLAVAGIONE ALBERTO 
 
 ## React Client Application Routes
 
